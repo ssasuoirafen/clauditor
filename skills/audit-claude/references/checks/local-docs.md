@@ -180,8 +180,9 @@ Date stamp patterns:
 - Lines with "last checked", "snapshot", or "version" immediately before/after an ISO date
 
 **Ticket IDs:**
+- If the file content explicitly states the ticket is Done/Closed (e.g. "Status: DONE", "closed <date>"), apply L01 `delete` regardless of mode.
 - Interactive mode + tracker available: check status. If Done/Closed -> emit L01 finding.
-- Read-only mode or no tracker: emit `flag` with `detail: "<ticket-id> -> verify status"`.
+- Read-only mode or no tracker AND status unknown: emit `flag` with `detail: "<ticket-id> -> verify status"`. (Do not emit verify flag if L01 `delete` was already emitted for this file.)
 
 **Date stamps older than 6 months:** emit `severity: "low"`, `action: "flag"`,
 `topic_key: "stale_date_stamp_<basename>"`,
