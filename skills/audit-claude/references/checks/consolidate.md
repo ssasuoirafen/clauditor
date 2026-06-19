@@ -90,6 +90,17 @@ Do NOT restate the full decision-matrix here; consult it at runtime.
 
 Always run C5 loopback (below) before finalizing any "promote to rule" proposal.
 
+### Absorb vs. create
+
+Before creating a new rule file, check whether an existing rule in the Baseline
+`entities.rules` already covers the same domain:
+- If a matching rule exists, PREFER absorbing the cluster into that rule (merge/edit) over
+  creating a new sibling file.
+- Only create a new file when no existing rule fits the domain.
+
+Example: a `sql_column_selection` feedback-cluster when a `sql-style` rule already exists ->
+absorb into `sql-style.md`, do not create `sql-column-selection.md`.
+
 ### Proposed action shape
 
 For each qualifying signal emit one entry in `proposed_actions`:
@@ -98,8 +109,8 @@ For each qualifying signal emit one entry in `proposed_actions`:
 {
   "id": "promote-<topic_key>",
   "action": "promote",
-  "path": "<target path - where the new file should be created>",
-  "detail": "<rationale: signal kind, count, why this target entity>",
+  "path": "<target path - where the new file should be created or the existing file to absorb into>",
+  "detail": "<rationale: signal kind, count, why this target entity; if absorbing into an existing rule, name it>",
   "requires_signoff": true
 }
 ```
@@ -149,9 +160,11 @@ same concern on the same `topic_key`.
 
 ---
 
-## C5 - Loopback: rule-promotion quality gate
+## C5 - Loopback: promotion quality gate
 
-**Goal:** prevent weak or misrouted "promote to rule" proposals from reaching the report.
+**Goal:** prevent weak or misrouted promotion proposals from reaching the report.
+
+### C5a - Rule proposals
 
 For every C2 proposal whose `path` targets a `.claude/rules/` file:
 
@@ -170,8 +183,25 @@ For every C2 proposal whose `path` targets a `.claude/rules/` file:
 3. If R01 fires, add a note in `detail` that the new rule should include `paths:` frontmatter.
 4. If R02 fires, add a note in `detail` that the new rule should include a `description:`
    frontmatter field stating the trigger condition.
-5. Only include the proposal in the final `proposed_actions` list after C5 passes (no
-   disqualifying criteria remain).
+
+### C5b - Skill and command proposals
+
+For every C2 proposal whose `path` targets a `.claude/skills/` or `.claude/commands/` file,
+run a routing sanity check against the decision-matrix in
+`${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/decision-matrix.md`:
+
+- Multi-step workflow that auto-triggers -> skill (`.claude/skills/<name>/SKILL.md`).
+- Parameterized, explicitly invoked flow -> command (`.claude/commands/<name>.md`).
+- Isolated/restricted scope -> agent.
+
+If the signal characteristics match a parameterized explicit-invocation flow but the proposal
+routes to a skill, re-route to command and update `path` and `detail`. Do NOT restate the
+full decision-matrix here; consult it at runtime.
+
+### Final gate
+
+Only include a proposal in the final `proposed_actions` list after C5 passes (no
+disqualifying or misrouting criteria remain).
 
 ---
 
@@ -218,7 +248,8 @@ After the markdown report, emit a fenced code block:
     ```
 
 Entries come from: C1 dedup deletions, C2 promotions (after C5 loopback), C3 collision
-resolutions, C4 cross-scope flags. Each entry:
+resolutions, C4 cross-scope flags, and explicit `keep` guards for must-not-delete items
+(see below). Each entry:
 
 ```json
 {
@@ -234,6 +265,28 @@ resolutions, C4 cross-scope flags. Each entry:
 `bypassPermissions`, credentials, or a file in a team-tracked location.
 `requires_signoff: false` for: low-risk flags with no file modification (e.g. add `paths:`
 to a rule that currently loads unconditionally).
+
+### Must-not-delete keep guards (SAFETY)
+
+The `audit-local-docs` reviewer flags non-regenerable crypto/key/cert material
+(`.pem`, `.key`, private keys, certificates) with `action: keep`. These items MUST appear
+in `proposed_actions` as explicit `keep` entries so the never-delete constraint survives
+into the action list and is not silently dropped.
+
+**Warning:** omitting a `keep` entry for non-regenerable material removes the guard and
+risks accidental deletion of a private key or certificate that cannot be recovered.
+
+For each item flagged `action: keep` by `audit-local-docs`, emit:
+
+```json
+{
+  "id": "keep-<topic_key>",
+  "action": "keep",
+  "path": "<abs path of the crypto/key/cert file>",
+  "detail": "Non-regenerable <key|cert|pem> - must not be deleted. Flagged by audit-local-docs.",
+  "requires_signoff": false
+}
+```
 
 ### Step 6 - Coverage note
 
