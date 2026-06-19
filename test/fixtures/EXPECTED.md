@@ -16,4 +16,5 @@ One row per planted issue. Format: `reviewer | file | expected finding`
 | audit-local-docs | sample-project/.local/docs/done-PROJ-1.md | closed-ticket artifact (delete) |
 | audit-local-docs | sample-project/.local/data/node-secretkey.pem | non-regenerable key file, must-keep (never delete) |
 | audit-memory | memory/feedback_sql_a.md, memory/feedback_sql_b.md | >=2 feedback entries on the same topic (merge or promote to rule) |
+| audit-memory | memory/project_done.md | closed-ticket project context (PROJ-42 closed 2024-12-01), stale - delete |
 | audit-consolidate | (cross) | promotion: 2x sql feedback + sql-style rule -> propose rule consolidation |
