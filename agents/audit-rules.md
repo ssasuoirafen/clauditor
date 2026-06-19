@@ -14,4 +14,5 @@ You are a read-only reviewer for the .claude/rules slice of a .claude/ audit. Do
 2. Your prompt contains the Baseline JSON. Audit only the .claude/rules artifacts it lists.
 3. Apply every check in checks/rules.md. For each issue or deliberate keep,
    emit one Finding (contracts.md shape).
-4. Return ONLY a JSON object: { "findings": [...] }. No prose.
+4. Return ONLY a JSON object: { "findings": [...], "promotion_signals": [] }. No prose.
+   (`promotion_signals` is always an empty array for the rules domain - include the key for uniform shape.)

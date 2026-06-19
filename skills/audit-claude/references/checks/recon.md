@@ -155,8 +155,12 @@ This becomes the Baseline JSON consumed by all reviewer agents. Populate every f
 
 ### Notes for reviewer agents consuming this baseline
 
-- `entities.rules` entries must include whether each rule has `paths:` frontmatter (consumed by
-  Stage 3/4 reviewer).
+- `entities.rules` entries must include a boolean field `has_paths` (true when the rule file has
+  `paths:` frontmatter, false otherwise). This is the canonical field name - do NOT use
+  `has_paths_frontmatter` or any other variant.
+- `entities.agents` entries must include a boolean field `has_tools` (true when the agent file has
+  a `tools:` frontmatter line, false otherwise). This is the canonical field name - do NOT use
+  `has_tools_frontmatter` or any other variant.
 - `entities.mcp_servers` must record source (`.mcp.json` vs `settings.json mcpServers`) and
   gitignore status (consumed by Stage 5f reviewer).
 - `tracked_map` must include at minimum: `.mcp.json`, `.claude/settings.json`,

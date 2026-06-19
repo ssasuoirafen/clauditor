@@ -7,10 +7,13 @@ All findings from this reviewer use `layer: "rules"`.
 
 ## Precondition
 
-If `entities.rules` in the Baseline is an empty list, return `{ "findings": [] }` -
+If `entities.rules` in the Baseline is an empty list, return `{ "findings": [], "promotion_signals": [] }` -
 absence is not itself a finding.
 
 ## What to read
+
+Before applying the checks below, Read `${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/freshness.md`
+and apply its routine. See the "Freshness check" section at the bottom for layer/path settings.
 
 For each entry in `Baseline.entities.rules`:
 
@@ -28,7 +31,12 @@ Read: <project_path>/.claude/rules/<name>.md
 | R03 | Rule has `paths:` but the glob pattern matches nothing in the repo | `delete` - dead rule; validate with Glob against `project_path` | medium |
 | R04 | Rule body covers multiple unrelated domains (multiple distinct tech stacks or heading clusters with no overlap) | `flag` - split into focused per-domain rules | low |
 | R05 | Rule body exceeds 200 lines | `flag` - consider splitting by subtopic | low |
-| R06 | Rule content duplicates a memory `feedback_*.md` or `reference_*.md` entry | `migrate` - keep in rule file, flag the memory entry for deletion | low |
+| R06 | Two or more rules in `entities.rules` overlap substantially in domain or content (same-layer duplication) | `flag` - merge or split to eliminate within-rules redundancy | low |
+
+> **Cross-layer dedup is NOT this reviewer's job.** Do NOT assert that a rule duplicates a memory
+> entry or CLAUDE.md content - the rules reviewer cannot reliably see those layers. Instead, emit
+> a precise `topic_key` and `gist` on every Finding (including `action: "keep"`) so that
+> `audit-consolidate` check C1 can detect cross-layer duplication across all reviewer outputs.
 
 ### R01 vs R02 disambiguation
 
