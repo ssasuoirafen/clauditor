@@ -33,7 +33,7 @@ dep file only when you need a value that Baseline does not carry.
 |-----|-------|--------|----------|
 | C01 | CLAUDE.md repeats content already in a `.claude/rules/` file (whether `@`-referenced or not) - the rule loads via auto-load regardless | `delete` the duplicate section | medium |
 | C02 | A one-line stub section in CLAUDE.md duplicates a rule | `delete` section entirely | low |
-| C03 | CLI installation, auth login, or API token generation steps are present - one-time operations do not belong in every-session context. **Exception:** a recurring dev-workflow section ("Adding a new tool module", "Adding a new model") is NOT one-time setup - keep it and consider a `claude-md-procedure` promotion_signal instead. | `migrate` to repo README or `delete` | medium |
+| C03 | CLI installation, auth login, or API token generation steps are present - one-time operations do not belong in every-session context. See the C03 dev-workflow exception note below. | `migrate` to repo README or `delete` | medium |
 | C04 | A stack version stated in CLAUDE.md does not match the actual version in `Baseline.stack_versions` | `flag` with both the stated and actual values | high |
 | C05 | CLAUDE.md contains a hardcoded counter ("N models", "N files") - source of truth is `git ls-files`, counters go stale | `delete` counter | low |
 | C06 | CLAUDE.md restates content that lives in a `.local/docs/` file - the prose copy drifts as the doc grows | `migrate` to a one-line pointer | low |
@@ -41,11 +41,22 @@ dep file only when you need a value that Baseline does not carry.
 | C08 | Server IPs, hostnames, or panel/API URLs present in CLAUDE.md of an infra or networking project - commit risk | `flag` - move to a gitignored config file | medium |
 | C09 | Language is inconsistent within the file (e.g. section headings in one language, bullets in another) | `flag` - pick one language for the whole file | low |
 | C10 | Orphan heading (`### Subsection` with no parent `## Section`) | `flag` - fix heading hierarchy | low |
+| C11 | Intra-CLAUDE.md duplicate: the same bullet, line, or instruction appears more than once within this file (same-layer, within-file repetition - distinct from cross-layer dedup) | `delete` the redundant copy | low |
 
 > **Cross-layer dedup is NOT this reviewer's job.** Do NOT assert that a CLAUDE.md section duplicates
 > a memory entry or a local-docs file without reading both. Emit a precise `topic_key` and `gist` on
 > every Finding (including `action: "keep"`) so `audit-consolidate` check C1 can detect cross-layer
 > duplication across all reviewer outputs.
+
+### C03 - dev-workflow exception
+
+A recurring dev-workflow section (e.g. "Adding a new model", "Adding a tool module",
+"Releasing a new version") is NOT one-time setup - it describes a process a developer
+repeats. Do NOT flag such a section under C03.
+
+Instead, emit a `claude-md-procedure` promotion_signal for the block so `audit-consolidate`
+can propose extracting it into a dedicated skill. This keeps the workflow discoverable while
+signaling that it may warrant a standalone skill file.
 
 ## H7 - AGENTS.md bridge check
 
@@ -80,6 +91,12 @@ For each volatile section found:
    `detail: "freshness stamp <date> in '<heading>' is >6mo old - re-validate the volatile section"`.
 
 ## Freshness check (reality pass)
+
+> **M10 and the freshness subroutine are additive and non-overlapping.** M10 is CLAUDE.md-specific:
+> it checks that volatile sections carry a `<!-- last reviewed: YYYY-MM-DD -->` stamp. The freshness
+> subroutine (`${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/freshness.md`) is generic file
+> health: stale code identifiers, intro/conclusion mismatch, and age. Run both; neither substitutes
+> for the other.
 
 Apply the shared freshness subroutine from
 `${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/freshness.md`

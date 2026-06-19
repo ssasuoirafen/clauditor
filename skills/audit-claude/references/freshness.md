@@ -28,7 +28,19 @@ from Baseline `project_path`.
 
 Count identifiers that no longer exist in the repo.
 
-If >=3 stale identifiers found:
+**Caveat - instructional/aspirational docs and sparse skeletons:** Before emitting a
+medium drift finding, assess whether the identifiers are presented as CURRENTLY EXISTING
+(factual references, e.g. "this project uses `src/models/user.py`") or as targets the
+user is instructed to create (procedural context: "how to add X", template walkthrough,
+skeleton scaffold). Also check whether the project source tree is sparse or nearly
+empty (few or no source files - a skeleton not yet built out). If either condition holds,
+the absence of those identifiers in the repo is expected and is NOT drift.
+
+In that case, downgrade: emit `severity: "low"`, `action: "flag"`,
+`detail: "identifiers absent but context is instructional or project is a skeleton - verify intent, not a drift finding"`.
+
+If >=3 stale identifiers are found in a factual/descriptive context (the doc presents
+them as currently existing artifacts):
 emit `severity: "medium"`, `action: "flag"`,
 `detail: "drift candidate: <N> stale identifiers (<id1>, <id2>, ...)"`.
 
