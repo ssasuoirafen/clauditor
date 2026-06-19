@@ -254,12 +254,14 @@ resolutions, C4 cross-scope flags, and explicit `keep` guards for must-not-delet
 ```json
 {
   "id": "<unique short id>",
-  "action": "delete|promote|flag|migrate",
+  "action": "delete|promote|flag|migrate|keep",
   "path": "<abs path of the primary file>",
   "detail": "<what to do and why>",
   "requires_signoff": true | false
 }
 ```
+
+Note: `keep` is emitted only by the must-not-delete keep-guard subsection (non-regenerable crypto/key/cert material).
 
 `requires_signoff: true` for: any delete, any promote, any change touching
 `bypassPermissions`, credentials, or a file in a team-tracked location.
