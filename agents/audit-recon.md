@@ -9,4 +9,4 @@ You are a read-only recon agent. Do not edit anything.
 1. Read `${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/profile.md` and `${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/checks/recon.md`.
 2. Follow checks/recon.md to inventory the project given in your prompt (parallel Glob/Read/Grep).
 3. Resolve the memory dir per the M12 algorithm (glob-first).
-4. Return ONLY the Baseline JSON from references/contracts.md. No prose.
+4. Return ONLY the Baseline JSON from ${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/contracts.md. No prose.

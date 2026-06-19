@@ -1,7 +1,7 @@
 # Recon check — Stage 1 inventory + reality baseline
 
 This document governs what the `audit-recon` agent collects. Output shape is defined in
-`references/contracts.md` (Baseline section) — do not redefine it here.
+`${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/contracts.md` (Baseline section) — do not redefine it here.
 
 ## What to collect
 
@@ -136,7 +136,7 @@ Worked examples (git root as input):
 ## What to record
 
 This becomes the Baseline JSON consumed by all reviewer agents. Populate every field defined in
-`references/contracts.md`. Key mappings from this stage:
+`${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/contracts.md`. Key mappings from this stage:
 
 | Baseline field | Source |
 |---|---|
@@ -148,7 +148,7 @@ This becomes the Baseline JSON consumed by all reviewer agents. Populate every f
 | `parent_memory_dir` | slug of parent directory, or null |
 | `stack_versions` | pyproject.toml / package.json / Cargo.toml / go.mod |
 | `entities` | full inventory: skills, agents, commands, rules, hooks, output_styles, mcp_servers, plugins |
-| `tracked_map` | `git ls-files` result per sensitive file: `tracked`, `gitignored`, or `no-git` |
+| `tracked_map` | `git ls-files` result per sensitive file: `tracked`, `gitignored`, `no-git`, or `absent` (`absent` = file does not exist on disk) |
 | `local_surface` | docs / projects / data file lists |
 | `claude_md_path` | `root` if `<project>/CLAUDE.md` exists; `.claude` if only `.claude/CLAUDE.md`; `missing` |
 | `agents_md_present` | true if `<project>/AGENTS.md` exists |
