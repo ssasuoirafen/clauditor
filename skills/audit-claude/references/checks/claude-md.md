@@ -14,8 +14,9 @@ Return that single Finding and stop.
 
 ## What to read
 
-Before the freshness checks, Read `${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/freshness.md`
-and apply its routine.
+Read `${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/freshness.md` so you know the routine before the Freshness check section below.
+
+Every Finding MUST include both `gist` (short one-line summary) and `detail` (full recommendation) per contracts.md.
 
 Resolve the CLAUDE.md path from Baseline:
 - `claude_md_path == "root"` -> `<project_path>/CLAUDE.md`

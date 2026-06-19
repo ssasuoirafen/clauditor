@@ -12,8 +12,9 @@ absence is not itself a finding.
 
 ## What to read
 
-Before applying the checks below, Read `${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/freshness.md`
-and apply its routine. See the "Freshness check" section at the bottom for layer/path settings.
+Read `${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/freshness.md` so you know the routine before the Freshness check section below.
+
+Before applying the checks below, see the "Freshness check" section at the bottom for layer/path settings.
 
 For each entry in `Baseline.entities.rules`:
 
