@@ -44,7 +44,7 @@ Glob: <project_path>/.claude/output-styles/*.md
 Glob: ~/.claude/output-styles/*.md
 ```
 
-Every Finding MUST include both `gist` (short one-line summary) and `detail` (full
+Every Finding MUST include `topic_key`, `gist` (short one-line summary), and `detail` (full
 recommendation) per contracts.md.
 
 ---
@@ -108,13 +108,12 @@ scopes. Compare the Baseline `entities.mcp_servers` list against both files.
 | F02 | Hardcoded secret/token in `.mcp.json` AND `tracked_map[".mcp.json"] == "tracked"` | `flag` - critical leak; replace with `${VAR}` from OS env | critical |
 | F03 | Hardcoded secret/token in `.mcp.json` AND `tracked_map[".mcp.json"] == "gitignored"` | `keep` - gitignored personal setup; NOT a finding (profile #2) | low |
 | F04 | Same token in both `.mcp.json` and `settings.json` `env` block | `keep` - expected duplication (profile #2); env block does not reach MCP startup | low |
-| F05 | `.mcp.json` exists and `tracked_map[".mcp.json"] == "tracked"` but contains secrets | see F02 | critical |
-| F06 | `.mcp.json` exists and `tracked_map[".mcp.json"] == "gitignored"` but team `.mcp.json` is needed and is absent | `flag` - team MCP setup undocumented; decide: commit a secrets-free `.mcp.json` with `${VAR}` refs | low |
-| F07 | MCP server defined but never referenced in any workflow, and `enableAllProjectMcpServers: true` | `flag` - unused server; remove to shorten MCP init time | low |
-| F08 | MCP server targets production infra (prod IP/host, live API) or unauthenticated datastore | `flag` - blast radius finding; severity depends on impact | high |
-| F09 | Project is an MCP-server producer (has `server.py`, `mcp[cli]`/FastMCP in deps, or `project.scripts` entry) but `.mcp.json` is absent | `keep` - correct for a producer repo; do NOT flag absent `.mcp.json` | low |
+| F05 | `.mcp.json` exists and `tracked_map[".mcp.json"] == "gitignored"` but team `.mcp.json` is needed and is absent | `flag` - team MCP setup undocumented; decide: commit a secrets-free `.mcp.json` with `${VAR}` refs | low |
+| F06 | MCP server defined but never referenced in any workflow, and `enableAllProjectMcpServers: true` | `flag` - unused server; remove to shorten MCP init time | low |
+| F07 | MCP server targets production infra (prod IP/host, live API) or unauthenticated datastore | `flag` - blast radius finding; severity depends on impact | high |
+| F08 | Project is an MCP-server producer (has `server.py`, `mcp[cli]`/FastMCP in deps, or `project.scripts` entry) but `.mcp.json` is absent | `keep` - correct for a producer repo; do NOT flag absent `.mcp.json` | low |
 
-Emit `action: "keep"` for each server that passes all F01-F09 checks.
+Emit `action: "keep"` for each server that passes all F01-F08 checks.
 
 ### Blast radius
 
@@ -148,9 +147,10 @@ derived from the host (dots to underscores). Renaming them breaks auth.
 
 **M14 - cross-scope union:** when auditing permissions, do NOT judge allow/deny entries per-file
 in isolation. Tag permission findings as `cross_scope: true` so the barrier (C4) evaluates
-stale or dangerous entries against the **union** across all scopes (managed > local >
-project > user). Arrays **merge and accumulate** across scopes - an entry absent from the
-project file may still be active if inherited from the user file.
+stale or dangerous entries against the **union** across all scopes. Evaluate permissions against
+the canonical precedence order and array-merge rule in
+`${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/decision-matrix.md`. An entry absent from
+the project file may still be active if inherited from a higher-precedence scope.
 
 For every permission entry found in any scope, also read the other scopes' permission arrays
 before deciding whether to flag or keep.
@@ -225,8 +225,8 @@ acceptable per profile #2. A secret in an `"absent"` file cannot leak. For files
 - A field named `token`, `api_key`, `apiKey`, `secret`, `password`, `credential`,
   `private_key`, or similar in a JSON object, with a non-`${VAR}` value
 - A field named `*_URL`, `*_DSN`, `*_CONNECTION*`, or `*_URI`: inspect the value for
-  embedded credentials; flag only if the value contains `://something:something@` (see S07),
-  NOT blanket-flag on field name alone
+  embedded credentials; flag only if the value contains userinfo like `://user:pass@` or
+  `://user:@` (including empty-password userinfo; see S07), NOT blanket-flag on field name alone
 
 | ID  | Check | Action | Severity |
 |-----|-------|--------|----------|
@@ -236,7 +236,7 @@ acceptable per profile #2. A secret in an `"absent"` file cannot leak. For files
 | S04 | No git layer (`tracked_map` values all `"no-git"`) AND a token-bearing file exists | `flag` - latent leak; add a preemptive `.gitignore` (profile #4) | medium |
 | S05 | Real secret (non-placeholder) in a committed `.env.example` | `flag` - critical leak; rotate value, replace with placeholder | critical |
 | S06 | `env`<->`.mcp.json` token duplication (same token in both) | `keep` - expected per profile #2; NOT a finding | low |
-| S07 | Connection-string URL with embedded credentials (value contains `://` followed by `something:something@`, any scheme) in a **tracked** file - triggered regardless of field name and regardless of value length | `flag` - critical leak; rotate credentials, replace userinfo with `${VAR}` refs or move to gitignored file | critical |
+| S07 | Connection-string URL with embedded credentials (value contains userinfo like `://user:pass@` or `://user:@` with empty password, any scheme) in a **tracked** file - triggered regardless of field name and regardless of value length | `flag` - critical leak; rotate credentials, replace userinfo with `${VAR}` refs or move to gitignored file | critical |
 
 Do NOT flag `.local/` in a committed `.gitignore`. Do NOT propose moving `.local/` exclusions -
 see memory [[local-gitignore-placement]].
