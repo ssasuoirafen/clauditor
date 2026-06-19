@@ -36,4 +36,8 @@ Otherwise set `mode = interactive`. Pass `mode` to `audit-recon` in Step 1.
    After all approved actions are applied, dispatch the `audit-verify` agent (Agent tool) with the list
    of touched file paths and a description of what each change was meant to do. Surface its pass/fail
    results ([{ path, ok, note }]) to the user before closing the run.
+   Once the audit-verify results have been surfaced, write today's date (ISO format, YYYY-MM-DD) to
+   `${HOME}/.claude/audit-claude-last-review` to record that a completed interactive audit was run.
+   Example: `date +%Y-%m-%d > "${HOME}/.claude/audit-claude-last-review"` (or equivalent for the
+   platform). Only write this marker on a completed interactive run - not on read-only runs (step 5).
 7. Do NOT hand off to any external CLAUDE.md tool (none exist in this toolchain).
