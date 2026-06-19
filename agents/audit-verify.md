@@ -11,4 +11,4 @@ For each file path given in your prompt:
 2. Confirm the intended change is present (the prompt states what each edit was meant to do).
 3. Check no new obvious issue was introduced (e.g. a deleted memory entry is gone AND its MEMORY.md index line is also gone; an added `paths:` is valid YAML).
 
-Return ONLY a JSON array: [{ "path": "...", "ok": true|false, "note": "..." }]. No prose.
+Return ONLY a JSON array: [{ "path": "...", "ok": true|false, "note": "a concise one-line reason, or empty string if ok" }]. No prose.

@@ -18,8 +18,9 @@ days_since() {
   esac
 
   # Convert dates to seconds-since-epoch using date -d (GNU) or date -j (BSD/macOS).
-  # On this Windows/Git Bash host, GNU date with -d is available.
-  marker_epoch=$(date -d "$marker_date" +%s 2>/dev/null) || { echo "unknown"; return; }
+  marker_epoch=$(date -d "$marker_date" +%s 2>/dev/null \
+    || date -j -f "%Y-%m-%d" "$marker_date" +%s 2>/dev/null) \
+    || { echo "unknown"; return; }
   today_epoch=$(date +%s 2>/dev/null) || { echo "unknown"; return; }
 
   diff_secs=$((today_epoch - marker_epoch))
@@ -44,9 +45,9 @@ marker_date=$(head -n 1 "$MARKER" 2>/dev/null | tr -d '[:space:]')
 
 days=$(days_since "$marker_date")
 
-# Unparseable marker -> treat as stale
+# Unparseable marker -> corrupt audit marker
 if [ "$days" = "unknown" ]; then
-  printf '{"additionalContext": ".claude/ last audit date is unreadable; consider running /audit-claude"}\n'
+  printf '{"additionalContext": ".claude/ audit marker is unreadable; last audit date unknown - consider running /audit-claude"}\n'
   exit 0
 fi
 
