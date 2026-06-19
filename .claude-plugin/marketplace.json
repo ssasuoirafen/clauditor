@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "audit-claude-local",
+  "owner": {
+    "name": "ssasuoirafen"
+  },
+  "plugins": [
+    {
+      "name": "audit-claude",
+      "source": "./",
+      "description": "Audits and optimizes a project's .claude/ structure, memory, and .local/ via a manual orchestrator skill and read-only per-domain review agents."
+    }
+  ]
+}
