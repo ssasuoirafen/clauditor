@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin.json",
+  "name": "audit-claude",
+  "version": "0.1.0",
+  "description": "Audits and optimizes a project's .claude/ structure, memory, and .local/ via a manual orchestrator skill and read-only per-domain review agents."
+}
