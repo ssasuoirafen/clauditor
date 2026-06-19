@@ -66,11 +66,12 @@ Every Finding MUST include `topic_key`, `gist`, and `detail` per contracts.md.
 > without a tracker: do not call out - emit `flag` with `detail: "<ticket-id> -> verify status"`.
 >
 > **No ticket mentioned:** skip status check entirely.
+>
+> **For L05 files, apply the same ticket-status logic to decide whether the draft is done (delete) or still in progress (keep).**
 
 ### 6B - .local/projects/ trackers
 
-Apply to each file in `Baseline.local_surface.projects`. Same lifecycle logic as Stage 2
-memory `project_*` entries.
+Apply to each file in `Baseline.local_surface.projects`. Apply the same closed/active determination used for local docs files (LP1-LP3 below).
 
 | ID  | Category | Action | Severity |
 |-----|----------|--------|----------|
