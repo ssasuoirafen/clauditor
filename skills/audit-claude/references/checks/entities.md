@@ -96,7 +96,7 @@ Skills not listed in `skills:` are unavailable inside the subagent.
 |-----|-------|--------|----------|
 | E10 | `name` frontmatter absent | `flag` | high |
 | E11 | `description` frontmatter absent or empty | `flag` | high |
-| E12 | `tools:` allowlist absent (`has_tools: false` in Baseline) | `relabel` or `flag` - best-practice gap; missing allowlist means the agent receives all session tools, undermining isolation intent | medium |
+| E12 | `tools:` allowlist absent (`has_tools: false` in Baseline) | `flag` - best-practice gap; missing allowlist means the agent receives all session tools, undermining isolation intent | medium |
 | E13 | `model:` absent and description implies a non-default cost or capability need | `flag` - recommended; add `model:` if the task warrants it | low |
 | E14 | Agent purpose requires context shared with the user (needs to hand back to main dialogue) | `relabel` -> skill or command | medium |
 | E15 | Agent is a thin wrapper over 2-3 tool calls with no isolation or analysis purpose | `flag` - inline in the calling skill/command; no standalone agent needed | low |

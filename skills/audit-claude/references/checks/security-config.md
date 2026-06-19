@@ -227,6 +227,8 @@ acceptable per profile #2. A secret in an `"absent"` file cannot leak. For files
 - A field named `*_URL`, `*_DSN`, `*_CONNECTION*`, or `*_URI`: inspect the value for
   embedded credentials; flag only if the value contains userinfo like `://user:pass@` or
   `://user:@` (including empty-password userinfo; see S07), NOT blanket-flag on field name alone
+- A JSON string value containing `-----BEGIN` (PEM block header - private key or certificate
+  pasted directly into a tracked settings.json or .mcp.json); flag as S01 critical leak
 
 | ID  | Check | Action | Severity |
 |-----|-------|--------|----------|

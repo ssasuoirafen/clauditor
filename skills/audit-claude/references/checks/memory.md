@@ -7,7 +7,7 @@ This document governs what the `audit-memory` reviewer checks. Finding and
 ## Precondition
 
 If the Baseline's `memory_dir` is `null`, return an empty result with no
-findings — absence is not itself a finding.
+findings - absence is not itself a finding.
 
 ## What to read
 
@@ -112,14 +112,17 @@ Note: this reviewer is read-only. Do not repair the index - emit findings only.
 
 ## Project status verification
 
-**Interactive mode + tracker available:** if a `project_*.md` mentions a ticket
-identifier (`PROJ-XXXX`, `GH-NNN`, `LINEAR-NNN`, etc.) and a Jira/tracker MCP
-is reachable, check ticket status. If the ticket is Done/Closed/Resolved - emit
-an M08 finding (action: `delete`).
+Do not call any tracker MCP from this reviewer - ticket status is resolved by `audit-recon`
+and available in `Baseline.ticket_status`.
 
-**Read-only mode or no tracker:** do not call any tracker. If the file text
-explicitly states the ticket is closed/done/completed - emit M08. Otherwise emit
-a `flag` finding with `detail: "<ticket-id> -> verify status"` and let the user
-resolve.
+If a `project_*.md` mentions a ticket identifier (`PROJ-XXXX`, `GH-NNN`, `LINEAR-NNN`, etc.):
+
+1. If the file text explicitly states the ticket is closed/done/completed (e.g. "Status: DONE",
+   "closed 2025-01-10") - emit M08 finding (`action: delete`) regardless of mode.
+2. Otherwise, look up the ticket ID in `Baseline.ticket_status`:
+   - Status `"closed"` -> emit M08 finding (`action: delete`).
+   - Status `"unknown"` or ticket absent from `ticket_status` -> emit a `flag` finding with
+     `detail: "<ticket-id> -> verify status"` and let the user resolve.
+   - Status `"open"` -> no finding; ticket is active.
 
 **No ticket mentioned:** skip status check entirely.

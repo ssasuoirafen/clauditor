@@ -61,9 +61,12 @@ Every Finding MUST include `topic_key`, `gist`, and `detail` per contracts.md.
 | L04 | Reusable templates and runbooks the user uses personally | `keep` | low |
 | L05 | Drafts for external systems (CMDB, tracker assets) - check if completed | `delete` if done; `keep` if still in progress | medium |
 
-> **Ticket status in interactive mode:** if a file references a ticket (`PROJ-XXXX`) and a
-> tracker MCP is available, check status. If Done/Closed -> apply L01. In read-only mode or
-> without a tracker: do not call out - emit `flag` with `detail: "<ticket-id> -> verify status"`.
+> **Ticket status:** do not call any tracker MCP from this reviewer - ticket status is resolved
+> by `audit-recon` and available in `Baseline.ticket_status`. If a file references a ticket
+> (`PROJ-XXXX`), look up its status there:
+> - `"closed"` -> apply L01 (`delete`).
+> - `"unknown"` or absent -> emit `flag` with `detail: "<ticket-id> -> verify status"`.
+> - `"open"` -> no finding; ticket is active.
 >
 > **No ticket mentioned:** skip status check entirely.
 >
@@ -180,10 +183,12 @@ Date stamp patterns:
 - `updated YYYY-MM-DD`
 - Lines with "last checked", "snapshot", or "version" immediately before/after an ISO date
 
-**Ticket IDs:**
+**Ticket IDs:** do not call any tracker MCP from this reviewer - read from `Baseline.ticket_status`.
 - If the file content explicitly states the ticket is Done/Closed (e.g. "Status: DONE", "closed <date>"), apply L01 `delete` regardless of mode.
-- Interactive mode + tracker available: check status. If Done/Closed -> emit L01 finding.
-- Read-only mode or no tracker AND status unknown: emit `flag` with `detail: "<ticket-id> -> verify status"`. (Do not emit verify flag if L01 `delete` was already emitted for this file.)
+- Otherwise look up each ticket ID in `Baseline.ticket_status`:
+  - `"closed"` -> emit L01 finding (`action: delete`).
+  - `"unknown"` or absent -> emit `flag` with `detail: "<ticket-id> -> verify status"`. (Do not emit verify flag if L01 `delete` was already emitted for this file.)
+  - `"open"` -> no finding.
 
 **Date stamps older than 6 months:** emit `severity: "low"`, `action: "flag"`,
 `topic_key: "stale_date_stamp_<basename>"`,

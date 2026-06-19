@@ -1,7 +1,7 @@
-# Recon check — Stage 1 inventory + reality baseline
+# Recon check - Stage 1 inventory + reality baseline
 
 This document governs what the `audit-recon` agent collects. Output shape is defined in
-`${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/contracts.md` (Baseline section) — do not redefine it here.
+`${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/contracts.md` (Baseline section) - do not redefine it here.
 
 ## What to collect
 
@@ -9,7 +9,7 @@ Collect in parallel (translate the snippets to Glob/Read/Grep tool calls; they a
 illustrative shell, not executable):
 
 ```text
-# Project CLAUDE.md — ROOT first (user keeps it there), .claude/ as fallback (profile #1)
+# Project CLAUDE.md - ROOT first (user keeps it there), .claude/ as fallback (profile #1)
 Read: <project>/CLAUDE.md
 Read: <project>/.claude/CLAUDE.md               # fallback only
 
@@ -22,7 +22,7 @@ Glob: <project>/.claude/rules/*.md
 Glob: <project>/.claude/output-styles/*.md
 Glob: <project>/.claude/hooks/*
 
-# Settings (all scopes — read each if present)
+# Settings (all scopes - read each if present)
 Read: <project>/.claude/settings.json          # project shared
 Read: <project>/.claude/settings.local.json    # project personal (gitignored)
 Read: ~/.claude/settings.json                  # user-level
@@ -34,11 +34,11 @@ Read: <project>/.mcp.json                      # may be committed (team-shared) 
 
 # Secrets surface + gitignore reality (profile #2-4)
 Glob: <project>/.env*                          # read committed .env.example AND gitignored .env/.env.local
-Bash: git -C <project> ls-files                # TRACKED files — secrets here = real leak; gitignored = OK
+Bash: git -C <project> ls-files                # TRACKED files - secrets here = real leak; gitignored = OK
 Bash: git -C <project> check-ignore .mcp.json .claude/settings.json CLAUDE.md
-Read: <project>/.gitignore                     # COMMITTED — grep for .claude/CLAUDE/mcp/.local/superpowers/AI
+Read: <project>/.gitignore                     # COMMITTED - grep for .claude/CLAUDE/mcp/.local/superpowers/AI
 Read: <project>/.git/info/exclude              # local excludes
-# If <project>/.git is absent → no-git project; record it (profile #4: unprotected-secrets finding)
+# If <project>/.git is absent -> no-git project; record it (profile #4: unprotected-secrets finding)
 
 # User-level entities (may affect this project)
 Glob: ~/.claude/CLAUDE.md
@@ -51,17 +51,17 @@ Glob: ~/.claude/plugins/marketplaces/*/plugins/*/commands/*.md
 Glob: ~/.claude/plugins/marketplaces/*/plugins/*/skills/*/SKILL.md
 # enabledPlugins key in settings.json lists which are active
 
-# Working artifacts (.local/ is a multi-surface tree — profile #5)
+# Working artifacts (.local/ is a multi-surface tree - profile #5)
 Glob: <project>/.local/**/*
 Glob: <project>/.local/docs/**/*               # notes/analysis
 Glob: <project>/.local/projects/**/*           # ACTIVE work trackers
-Glob: <project>/.local/data/**/*               # payloads — may hold non-regenerable keys/certs
+Glob: <project>/.local/data/**/*               # payloads - may hold non-regenerable keys/certs
 
 # Auto memory (see "Memory path resolution" below)
-# If <memory-dir> is absent → no memory for this project; note it and skip Stage 2 cleanly.
+# If <memory-dir> is absent -> no memory for this project; note it and skip Stage 2 cleanly.
 Glob: <memory-dir>/*.md
 Read: <memory-dir>/MEMORY.md
-# Parent-scope memory also loads (profile #6) — inventory it too:
+# Parent-scope memory also loads (profile #6) - inventory it too:
 Glob: <parent-memory-dir>/*.md                 # slug of <project>'s parent dir
 Read: <parent-memory-dir>/MEMORY.md
 
@@ -79,16 +79,16 @@ Grep pattern: 'rules/|@\.claude|@rules' in <project>/CLAUDE.md   # ROOT (profile
 ## Memory path resolution (M12)
 
 Auto-memory lives at `~/.claude/projects/<encoded>/memory/`. Always anchor derivation to the
-**git repo root** — run `git -C <passed-path> rev-parse --show-toplevel` before doing anything
+**git repo root** - run `git -C <passed-path> rev-parse --show-toplevel` before doing anything
 else. If no git repo, fall back to the literal passed path.
 
-### Step 1 — check autoMemoryDirectory first
+### Step 1 - check autoMemoryDirectory first
 
 Read `~/.claude/settings.json`. If an `autoMemoryDirectory` key is present, the memory path is
-set explicitly and no encoding is needed — use that path directly (substituting the project slug
+set explicitly and no encoding is needed - use that path directly (substituting the project slug
 as configured). Skip to output.
 
-### Step 2 — glob (primary method)
+### Step 2 - glob (primary method)
 
 Use the glob as the primary resolver. It handles on-disk directory name casing automatically
 without needing to know the exact encoding:
@@ -113,7 +113,7 @@ Derive the parent-scope dir the same way (last segment = parent directory name):
 Glob: ~/.claude/projects/*Projects*/memory/MEMORY.md
 ```
 
-### Step 3 — manual derivation (fallback only)
+### Step 3 - manual derivation (fallback only)
 
 Use only if Step 2 returns no results.
 
@@ -129,9 +129,36 @@ The glob approach in Step 2 avoids this entirely.
 
 Worked examples (git root as input):
 
-- `C:\Users\foo\Projects\bar` → encoded: `C--Users-foo-Projects-bar`
-  (but glob is safer — on-disk may be `c--Users-foo-Projects-bar` or `C--Users-foo-Projects-bar`)
-- `/home/foo/projects/bar` (POSIX) → `-home-foo-projects-bar`
+- `C:\Users\foo\Projects\bar` -> encoded: `C--Users-foo-Projects-bar`
+  (but glob is safer - on-disk may be `c--Users-foo-Projects-bar` or `C--Users-foo-Projects-bar`)
+- `/home/foo/projects/bar` (POSIX) -> `-home-foo-projects-bar`
+
+## Ticket ID collection and status resolution
+
+After completing inventory, collect all ticket identifiers referenced anywhere in:
+- memory files (`<memory-dir>/*.md`, `<parent-memory-dir>/*.md`)
+- `.local/` files (all files in `local_surface.docs`, `local_surface.projects`)
+- `CLAUDE.md` (at path resolved from `claude_md_path`)
+
+Ticket ID pattern: `[A-Z]+-\d+` (e.g. `PROJ-123`, `GH-456`, `LINEAR-789`).
+
+**Interactive mode + tracker MCP reachable:** resolve each unique ticket ID via the Jira/tracker
+MCP tool. For each ticket, record its status (e.g. `open`, `closed`, `done`, `resolved`). Stamp
+results into `Baseline.ticket_status`:
+
+```json
+{
+  "PROJ-1":  "closed",
+  "PROJ-42": "open",
+  "GH-7":    "done"
+}
+```
+
+Normalize statuses: treat `done`, `resolved`, `closed`, `completed` as `"closed"`; all others
+as `"open"`.
+
+**Read-only mode or tracker MCP not reachable:** set each collected ticket ID's status to
+`"unknown"` in `Baseline.ticket_status`. Do not call any tracker tool.
 
 ## What to record
 
@@ -152,6 +179,7 @@ This becomes the Baseline JSON consumed by all reviewer agents. Populate every f
 | `local_surface` | docs / projects / data file lists |
 | `claude_md_path` | `root` if `<project>/CLAUDE.md` exists; `.claude` if only `.claude/CLAUDE.md`; `missing` |
 | `agents_md_present` | true if `<project>/AGENTS.md` exists |
+| `ticket_status` | map of ticket ID -> status string; populated by recon (see "Ticket ID collection" above) |
 
 ### Notes for reviewer agents consuming this baseline
 

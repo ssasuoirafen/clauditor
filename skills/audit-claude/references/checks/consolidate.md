@@ -146,9 +146,11 @@ same concern on the same `topic_key`.
 1. Collect all Findings tagged with cross-scope relevance. Cross-scope Findings are those from
    `layer: "settings"` or `layer: "mcp"` (from security-config reviewer) and any Finding
    whose `detail` references multiple settings scopes.
-2. Merge the permission allow/deny arrays from all scopes found in the Baseline
-   `tracked_map` and the security-config reviewer's findings. Evaluate stale or dangerous
-   entries against the combined union, not per-file.
+2. Build the permission allow/deny union from the `audit-security-config` reviewer's Findings
+   that carry `cross_scope: true` - these already contain the permission entries from every
+   scope the reviewer read. Do NOT attempt to re-derive permission contents from
+   `Baseline.tracked_map`; `tracked_map` only records tracking status, not file contents.
+   Evaluate stale or dangerous entries against the combined union, not per-file.
 3. For precedence resolution, consult
    `${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/decision-matrix.md` (the
    "Scope precedence" note at the bottom). Do NOT restate the precedence order here.

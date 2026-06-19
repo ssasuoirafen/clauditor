@@ -32,7 +32,7 @@ Read: <project_path>/.claude/rules/<name>.md
 | R03 | Rule has `paths:` but the glob pattern matches nothing in the repo | `delete` - dead rule; validate with Glob against `project_path` | medium |
 | R04 | Rule body covers multiple unrelated domains (multiple distinct tech stacks or heading clusters with no overlap) | `flag` - split into focused per-domain rules | low |
 | R05 | Rule body exceeds 200 lines | `flag` - consider splitting by subtopic | low |
-| R06 | Two or more rules in `entities.rules` overlap substantially in domain or content (same-layer duplication) | `flag` - merge or split to eliminate within-rules redundancy | low |
+| R06 | Two or more rules in `entities.rules` overlap substantially in domain or content (same-layer duplication) | `flag` - merge or consolidate to eliminate within-rules redundancy | low |
 
 > **Cross-layer dedup is NOT this reviewer's job.** Do NOT assert that a rule duplicates a memory
 > entry or CLAUDE.md content - the rules reviewer cannot reliably see those layers. Instead, emit
