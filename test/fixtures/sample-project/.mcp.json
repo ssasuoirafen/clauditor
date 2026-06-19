@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "my-api-server": {
+      "command": "npx",
+      "args": ["-y", "my-api-mcp-server"],
+      "env": {
+        "API_TOKEN": "hardcoded-api-token-abc123"
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "env": {
+    "DATABASE_URL": "postgresql://localhost:5432/mydb",
+    "FAKE_TOKEN": "secret123"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "Remember to run make lint before committing and check that all tests pass"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(make:*)",
+      "Bash(git:*)"
+    ]
+  }
+}
