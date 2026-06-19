@@ -33,4 +33,7 @@ Otherwise set `mode = interactive`. Pass `mode` to `audit-recon` in Step 1.
 6. **Interactive run:** request sign-off on `proposed_actions`. After approval, apply each approved
    action yourself (you are the single writer) one atomic action at a time, reporting status after each.
    Never delete an `action: keep` item (non-regenerable key/cert material). No edits before sign-off.
+   After all approved actions are applied, dispatch the `audit-verify` agent (Agent tool) with the list
+   of touched file paths and a description of what each change was meant to do. Surface its pass/fail
+   results ([{ path, ok, note }]) to the user before closing the run.
 7. Do NOT hand off to any external CLAUDE.md tool (none exist in this toolchain).
