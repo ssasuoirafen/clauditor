@@ -220,9 +220,13 @@ acceptable per profile #2. A secret in an `"absent"` file cannot leak. For files
 
 - Matches a known token pattern: `ghp_`, `glpat-`, `xoxb-`, `sk-`, `AIza`, `AKIA` prefixes
 - A key-value pair where the value is >20 chars of mixed case, digits, and symbols not
-  matching a URL or file path
+  matching a credential-free URL (one with no `user:pass@` userinfo) or file path; a URL
+  that contains `://` followed by `something:something@` is NOT excluded - see S07
 - A field named `token`, `api_key`, `apiKey`, `secret`, `password`, `credential`,
   `private_key`, or similar in a JSON object, with a non-`${VAR}` value
+- A field named `*_URL`, `*_DSN`, `*_CONNECTION*`, or `*_URI`: inspect the value for
+  embedded credentials; flag only if the value contains `://something:something@` (see S07),
+  NOT blanket-flag on field name alone
 
 | ID  | Check | Action | Severity |
 |-----|-------|--------|----------|
@@ -232,6 +236,7 @@ acceptable per profile #2. A secret in an `"absent"` file cannot leak. For files
 | S04 | No git layer (`tracked_map` values all `"no-git"`) AND a token-bearing file exists | `flag` - latent leak; add a preemptive `.gitignore` (profile #4) | medium |
 | S05 | Real secret (non-placeholder) in a committed `.env.example` | `flag` - critical leak; rotate value, replace with placeholder | critical |
 | S06 | `env`<->`.mcp.json` token duplication (same token in both) | `keep` - expected per profile #2; NOT a finding | low |
+| S07 | Connection-string URL with embedded credentials (value contains `://` followed by `something:something@`, any scheme) in a **tracked** file - triggered regardless of field name and regardless of value length | `flag` - critical leak; rotate credentials, replace userinfo with `${VAR}` refs or move to gitignored file | critical |
 
 Do NOT flag `.local/` in a committed `.gitignore`. Do NOT propose moving `.local/` exclusions -
 see memory [[local-gitignore-placement]].
