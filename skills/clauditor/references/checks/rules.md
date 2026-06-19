@@ -1,7 +1,7 @@
 # Rules check - Stage 3 + 5d
 
-Governs what `audit-rules` checks. Finding shape is defined in
-`${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/contracts.md`.
+Governs what `clauditor-rules` checks. Finding shape is defined in
+`${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/contracts.md`.
 
 All findings from this reviewer use `layer: "rules"`.
 
@@ -12,7 +12,7 @@ absence is not itself a finding.
 
 ## What to read
 
-Read `${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/freshness.md` so you know the routine before the Freshness check section below.
+Read `${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/freshness.md` so you know the routine before the Freshness check section below.
 
 Before applying the checks below, see the "Freshness check" section at the bottom for layer/path settings.
 
@@ -37,7 +37,7 @@ Read: <project_path>/.claude/rules/<name>.md
 > **Cross-layer dedup is NOT this reviewer's job.** Do NOT assert that a rule duplicates a memory
 > entry or CLAUDE.md content - the rules reviewer cannot reliably see those layers. Instead, emit
 > a precise `topic_key` and `gist` on every Finding (including `action: "keep"`) so that
-> `audit-consolidate` check C1 can detect cross-layer duplication across all reviewer outputs.
+> `clauditor-consolidate` check C1 can detect cross-layer duplication across all reviewer outputs.
 
 ### R01 vs R02 disambiguation
 
@@ -71,6 +71,6 @@ brief `detail` confirming the rule is correctly placed.
 ## Freshness check
 
 Apply the shared freshness subroutine from
-`${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/freshness.md`
+`${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/freshness.md`
 to each rule file. Set `layer: "rules"` and `path` to the rule's absolute path on all
 freshness findings.

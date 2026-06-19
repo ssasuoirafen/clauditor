@@ -1,8 +1,8 @@
 # Local docs check - Stage 6 + Stage 7
 
-This document governs what the `audit-local-docs` reviewer checks. Finding and
+This document governs what the `clauditor-local-docs` reviewer checks. Finding and
 `promotion_signals` shapes are defined in
-`${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/contracts.md`.
+`${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/contracts.md`.
 
 All findings from this reviewer use `layer: "local-docs"`.
 
@@ -14,7 +14,7 @@ absence is not itself a finding.
 
 ## What to read
 
-Read `${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/freshness.md` once so you know
+Read `${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/freshness.md` once so you know
 the freshness routine before the Stage 7 freshness section below. Do not re-read it during
 the run.
 
@@ -49,7 +49,7 @@ Glob: <memory_dir>/*.md
 
 Apply to each file in `Baseline.local_surface.docs`. Emit one Finding per file
 (`layer: "local-docs"`). Where a keep decision is deliberate, emit a `keep` finding
-so `audit-consolidate` knows the file was reviewed.
+so `clauditor-consolidate` knows the file was reviewed.
 
 Every Finding MUST include `topic_key`, `gist`, and `detail` per contracts.md.
 
@@ -62,7 +62,7 @@ Every Finding MUST include `topic_key`, `gist`, and `detail` per contracts.md.
 | L05 | Drafts for external systems (CMDB, tracker assets) - check if completed | `delete` if done; `keep` if still in progress | medium |
 
 > **Ticket status:** do not call any tracker MCP from this reviewer - ticket status is resolved
-> by `audit-recon` and available in `Baseline.ticket_status`. If a file references a ticket
+> by `clauditor-recon` and available in `Baseline.ticket_status`. If a file references a ticket
 > (`PROJ-XXXX`), look up its status there:
 > - `"closed"` -> apply L01 (`delete`).
 > - `"unknown"` or absent -> emit `flag` with `detail: "<ticket-id> -> verify status"`.
@@ -129,7 +129,7 @@ wiki tools registered and CLAUDE.md names it canonical for docs).
 ### 7.1 - Freshness check
 
 Apply the shared freshness subroutine from
-`${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/freshness.md`
+`${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/freshness.md`
 to each file in `Baseline.local_surface.docs`. The routine was read once in "What to read"
 above - apply it here, once per file. Do not re-read the routine during this pass.
 
@@ -163,7 +163,7 @@ Where a file duplicates content from CLAUDE.md, a `.claude/rules/` file, or a me
 - `detail`: name the authoritative source and note that the local doc is redundant.
 
 > **Cross-layer dedup is NOT the final authority here.** Emit a precise `topic_key` and
-> `gist` on every Finding so `audit-consolidate` can confirm cross-layer deduplication
+> `gist` on every Finding so `clauditor-consolidate` can confirm cross-layer deduplication
 > across all reviewer outputs.
 
 ### 7.4 - Lifecycle markers
@@ -227,7 +227,7 @@ entry per cluster:
 Normalize `topic_key`: lowercase, strip punctuation, replace spaces with underscores
 (e.g. "Deploy runbook" -> `deploy_runbook`).
 
-The signal feeds `audit-consolidate` to decide whether to consolidate the runbooks or
+The signal feeds `clauditor-consolidate` to decide whether to consolidate the runbooks or
 promote the pattern into a `.claude/skills/<name>/SKILL.md`.
 
 Do NOT emit a signal for a single unrepeated runbook - only for clusters of two or more

@@ -1,6 +1,6 @@
 ---
-name: audit-verify
-description: Read-only re-pass after /audit-claude applies edits. Confirms each touched file still parses (JSON/frontmatter) and the intended change took effect, with no new obvious issue. Use only after the interactive apply phase.
+name: clauditor-verify
+description: Read-only re-pass after /clauditor applies edits. Confirms each touched file still parses (JSON/frontmatter) and the intended change took effect, with no new obvious issue. Use only after the interactive apply phase.
 tools: Read, Glob, Grep, Bash
 ---
 

@@ -1,7 +1,7 @@
 # Recon check - Stage 1 inventory + reality baseline
 
-This document governs what the `audit-recon` agent collects. Output shape is defined in
-`${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/contracts.md` (Baseline section) - do not redefine it here.
+This document governs what the `clauditor-recon` agent collects. Output shape is defined in
+`${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/contracts.md` (Baseline section) - do not redefine it here.
 
 ## What to collect
 
@@ -163,7 +163,7 @@ as `"open"`.
 ## What to record
 
 This becomes the Baseline JSON consumed by all reviewer agents. Populate every field defined in
-`${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/contracts.md`. Key mappings from this stage:
+`${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/contracts.md`. Key mappings from this stage:
 
 | Baseline field | Source |
 |---|---|

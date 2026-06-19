@@ -1,7 +1,7 @@
 # CLAUDE.md check - Stage 4
 
-Governs what `audit-claude-md` checks. Finding and `promotion_signals` shapes are defined in
-`${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/contracts.md`.
+Governs what `clauditor-claude-md` checks. Finding and `promotion_signals` shapes are defined in
+`${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/contracts.md`.
 
 All findings from this reviewer use `layer: "claude-md"`.
 
@@ -14,7 +14,7 @@ Return that single Finding and stop.
 
 ## What to read
 
-Read `${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/freshness.md` so you know the routine before the Freshness check section below.
+Read `${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/freshness.md` so you know the routine before the Freshness check section below.
 
 Every Finding MUST include both `gist` (short one-line summary) and `detail` (full recommendation) per contracts.md.
 
@@ -46,7 +46,7 @@ dep file only when you need a value that Baseline does not carry.
 
 > **Cross-layer dedup is NOT this reviewer's job.** Do NOT assert that a CLAUDE.md section duplicates
 > a memory entry or a local-docs file without reading both. Emit a precise `topic_key` and `gist` on
-> every Finding (including `action: "keep"`) so `audit-consolidate` check C1 can detect cross-layer
+> every Finding (including `action: "keep"`) so `clauditor-consolidate` check C1 can detect cross-layer
 > duplication across all reviewer outputs.
 
 ### C03 - dev-workflow exception
@@ -55,7 +55,7 @@ A recurring dev-workflow section (e.g. "Adding a new model", "Adding a tool modu
 "Releasing a new version") is NOT one-time setup - it describes a process a developer
 repeats. Do NOT flag such a section under C03.
 
-Instead, emit a `claude-md-procedure` promotion_signal for the block so `audit-consolidate`
+Instead, emit a `claude-md-procedure` promotion_signal for the block so `clauditor-consolidate`
 can propose extracting it into a dedicated skill. This keeps the workflow discoverable while
 signaling that it may warrant a standalone skill file.
 
@@ -95,12 +95,12 @@ For each volatile section found:
 
 > **M10 and the freshness subroutine are additive and non-overlapping.** M10 is CLAUDE.md-specific:
 > it checks that volatile sections carry a `<!-- last reviewed: YYYY-MM-DD -->` stamp. The freshness
-> subroutine (`${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/freshness.md`) is generic file
+> subroutine (`${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/freshness.md`) is generic file
 > health: stale code identifiers, intro/conclusion mismatch, and age. Run both; neither substitutes
 > for the other.
 
 Apply the shared freshness subroutine from
-`${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/freshness.md`
+`${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/freshness.md`
 to the CLAUDE.md file. Set `layer: "claude-md"` and `path` to the CLAUDE.md absolute path on all
 freshness findings.
 
@@ -143,7 +143,7 @@ entry:
 Normalize `topic_key`: lowercase, strip punctuation, replace spaces with underscores
 (e.g. "Adding a new model" -> `adding_a_new_model`).
 
-The consolidation barrier turns these into new-skill proposals - `audit-consolidate` decides whether
+The consolidation barrier turns these into new-skill proposals - `clauditor-consolidate` decides whether
 to promote.
 
 Do NOT emit a signal for one-liner mentions or passive rules - only for genuine multi-step flows

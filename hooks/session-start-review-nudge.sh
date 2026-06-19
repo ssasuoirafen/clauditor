@@ -3,7 +3,7 @@
 # SessionStart hook: emits additionalContext when .claude/ was last audited
 # more than THRESHOLD_DAYS ago. Non-blocking, exit 0 always.
 
-MARKER="${HOME}/.claude/audit-claude-last-review"
+MARKER="${HOME}/.claude/clauditor-last-review"
 THRESHOLD_DAYS=30
 
 # Returns the number of days between an ISO date string (YYYY-MM-DD) and today.
@@ -36,7 +36,7 @@ days_since() {
 
 # No marker -> never audited
 if [ ! -f "$MARKER" ]; then
-  printf '{"additionalContext": ".claude/ has never been audited; consider running /audit-claude"}\n'
+  printf '{"additionalContext": ".claude/ has never been audited; consider running /clauditor"}\n'
   exit 0
 fi
 
@@ -47,12 +47,12 @@ days=$(days_since "$marker_date")
 
 # Unparseable marker -> corrupt audit marker
 if [ "$days" = "unknown" ]; then
-  printf '{"additionalContext": ".claude/ audit marker is unreadable; last audit date unknown - consider running /audit-claude"}\n'
+  printf '{"additionalContext": ".claude/ audit marker is unreadable; last audit date unknown - consider running /clauditor"}\n'
   exit 0
 fi
 
 if [ "$days" -ge "$THRESHOLD_DAYS" ]; then
-  printf '{"additionalContext": ".claude/ last audited %s days ago; consider running /audit-claude"}\n' "$days"
+  printf '{"additionalContext": ".claude/ last audited %s days ago; consider running /clauditor"}\n' "$days"
 fi
 
 exit 0

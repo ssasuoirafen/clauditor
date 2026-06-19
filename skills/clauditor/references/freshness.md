@@ -1,9 +1,9 @@
 # Freshness subroutine
 
 Shared routine for checking whether a file's content is still current. Referenced by
-`${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/checks/rules.md`,
-`${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/checks/claude-md.md`, and
-`${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/checks/local-docs.md`. Apply per file being audited.
+`${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/checks/rules.md`,
+`${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/checks/claude-md.md`, and
+`${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/checks/local-docs.md`. Apply per file being audited.
 
 The caller sets `layer` and `path` on each Finding; this routine only specifies
 `severity`, `action`, and `detail`.

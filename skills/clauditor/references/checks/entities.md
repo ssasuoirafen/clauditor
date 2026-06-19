@@ -1,7 +1,7 @@
 # Entities check - Stage 5a/5b/5c/5i/5j
 
-Governs what `audit-entities` checks. Finding and `promotion_signals` shapes are defined in
-`${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/contracts.md`.
+Governs what `clauditor-entities` checks. Finding and `promotion_signals` shapes are defined in
+`${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/contracts.md`.
 
 All findings from this reviewer use `layer: "entities"`.
 
@@ -16,7 +16,7 @@ files.
 ## Command/skill-merge caveat
 
 Before judging 5a/5c entity-type choices, apply the command/skill-merge caveat in Principle 5 of
-`${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/profile.md`. The real distinction is
+`${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/profile.md`. The real distinction is
 auto-trigger vs manual-only, not file location.
 
 ## What to read
@@ -126,11 +126,11 @@ Emit `action: "keep"` when none of E20-E23 applies.
 After applying 5a/5b/5c checks per-file, confirm the combined view: no entity type was silently
 skipped. Per-file findings from 5a/5b/5c already cover all issues; this pass captures any gap.
 
-Emit one summary `keep` Finding per entity that passed all checks, so `audit-consolidate` knows
+Emit one summary `keep` Finding per entity that passed all checks, so `clauditor-consolidate` knows
 every entry was reviewed.
 
 > **Cross-layer dedup is NOT this reviewer's job.** Do NOT assert that an entity duplicates a
-> memory entry or CLAUDE.md content - that is audit-consolidate's C3 job. Emit a precise
+> memory entry or CLAUDE.md content - that is clauditor-consolidate's C3 job. Emit a precise
 > `topic_key` and `gist` on every Finding (including `action: "keep"`) so C3 can detect
 > cross-layer duplication by matching across all reviewer outputs.
 
@@ -151,7 +151,7 @@ files live in `~/.claude/plugins/marketplaces/*/plugins/*/`.
 | E34 | The correct plugin for the project type is not enabled (e.g. `mcp-server-dev` for an MCP-server repo) | `flag` - positive fit gap; recommend enabling | low |
 
 For E33: set a stable normalized `topic_key` on the Finding (lowercase, underscores, e.g.
-`dbt_conventions_overlap`) so `audit-consolidate` barrier C3 can match it against findings from
+`dbt_conventions_overlap`) so `clauditor-consolidate` barrier C3 can match it against findings from
 other layers.
 
 Never edit plugin-internal files in `~/.claude/plugins/cache/` - they are overwritten on update.

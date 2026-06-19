@@ -1,14 +1,14 @@
 # Consolidate check - barrier C1-C6
 
-Governs what `audit-consolidate` does. Finding shape is defined in
-`${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/contracts.md`.
+Governs what `clauditor-consolidate` does. Finding shape is defined in
+`${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/contracts.md`.
 
 ---
 
 ## Input expectations
 
 Your prompt contains:
-- The Baseline JSON (output of `audit-recon`).
+- The Baseline JSON (output of `clauditor-recon`).
 - Six reviewer outputs, each as `{ "findings": [...], "promotion_signals": [...] }`.
 
 The six reviewer domains are: **memory**, **rules**, **claude-md**, **entities**,
@@ -75,7 +75,7 @@ these are already structured artifacts; their presence alone justifies promotion
 ### Routing via decision-matrix.md
 
 For each signal that passes the threshold, look up the correct target entity in
-`${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/decision-matrix.md`:
+`${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/decision-matrix.md`:
 
 | Signal kind | Typical route |
 |---|---|
@@ -146,13 +146,13 @@ same concern on the same `topic_key`.
 1. Collect all Findings tagged with cross-scope relevance. Cross-scope Findings are those from
    `layer: "settings"` or `layer: "mcp"` (from security-config reviewer) and any Finding
    whose `detail` references multiple settings scopes.
-2. Build the permission allow/deny union from the `audit-security-config` reviewer's Findings
+2. Build the permission allow/deny union from the `clauditor-security-config` reviewer's Findings
    that carry `cross_scope: true` - these already contain the permission entries from every
    scope the reviewer read. Do NOT attempt to re-derive permission contents from
    `Baseline.tracked_map`; `tracked_map` only records tracking status, not file contents.
    Evaluate stale or dangerous entries against the combined union, not per-file.
 3. For precedence resolution, consult
-   `${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/decision-matrix.md` (the
+   `${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/decision-matrix.md` (the
    "Scope precedence" note at the bottom). Do NOT restate the precedence order here.
 4. For each entry that is dangerous or stale at the union level:
    - Emit a `proposed_action` with `action: "flag"`, the path of the highest-precedence
@@ -172,7 +172,7 @@ For every C2 proposal whose `path` targets a `.claude/rules/` file:
 
 1. Re-evaluate the proposed rule body (inferred from the promotion signal's `detail`) against
    the appropriateness criteria in
-   `${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/checks/rules.md`:
+   `${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/checks/rules.md`:
    - R01: does the content warrant `paths:` scoping?
    - R02: is it intent-triggered (should stay unconditional + needs `description:`)?
    - R07: does it contain multi-step logic / tool calls -> should be a skill instead?
@@ -190,7 +190,7 @@ For every C2 proposal whose `path` targets a `.claude/rules/` file:
 
 For every C2 proposal whose `path` targets a `.claude/skills/` or `.claude/commands/` file,
 run a routing sanity check against the decision-matrix in
-`${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/decision-matrix.md`:
+`${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/decision-matrix.md`:
 
 - Multi-step workflow that auto-triggers -> skill (`.claude/skills/<name>/SKILL.md`).
 - Parameterized, explicitly invoked flow -> command (`.claude/commands/<name>.md`).
@@ -272,7 +272,7 @@ to a rule that currently loads unconditionally).
 
 ### Must-not-delete keep guards (SAFETY)
 
-The `audit-local-docs` reviewer flags non-regenerable crypto/key/cert material
+The `clauditor-local-docs` reviewer flags non-regenerable crypto/key/cert material
 (`.pem`, `.key`, private keys, certificates) with `action: keep`. These items MUST appear
 in `proposed_actions` as explicit `keep` entries so the never-delete constraint survives
 into the action list and is not silently dropped.
@@ -280,14 +280,14 @@ into the action list and is not silently dropped.
 **Warning:** omitting a `keep` entry for non-regenerable material removes the guard and
 risks accidental deletion of a private key or certificate that cannot be recovered.
 
-For each item flagged `action: keep` by `audit-local-docs`, emit:
+For each item flagged `action: keep` by `clauditor-local-docs`, emit:
 
 ```json
 {
   "id": "keep-<topic_key>",
   "action": "keep",
   "path": "<abs path of the crypto/key/cert file>",
-  "detail": "Non-regenerable <key|cert|pem> - must not be deleted. Flagged by audit-local-docs.",
+  "detail": "Non-regenerable <key|cert|pem> - must not be deleted. Flagged by clauditor-local-docs.",
   "requires_signoff": false
 }
 ```

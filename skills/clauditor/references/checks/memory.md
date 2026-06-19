@@ -1,8 +1,8 @@
 # Memory check - Stage 2
 
-This document governs what the `audit-memory` reviewer checks. Finding and
+This document governs what the `clauditor-memory` reviewer checks. Finding and
 `promotion_signals` shapes are defined in
-`${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/contracts.md`.
+`${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/contracts.md`.
 
 ## Precondition
 
@@ -32,7 +32,7 @@ Read: each file in local_surface.projects
 
 Apply to each memory entry. For each entry, emit exactly one Finding
 (contracts.md shape, `layer: "memory"`). Where a keep decision is deliberate,
-emit a `keep` finding so audit-consolidate knows the entry was reviewed.
+emit a `keep` finding so clauditor-consolidate knows the entry was reviewed.
 
 | ID  | Category | Action | Severity |
 |-----|----------|--------|----------|
@@ -64,7 +64,7 @@ When two or more `feedback_*.md` files share a common topic:
    Normalize `topic_key`: lowercase, strip punctuation, replace spaces with
    underscores (e.g. "SQL query formatting" -> `sql_query_formatting`).
 
-The `promotion_signals` entry feeds `audit-consolidate` to decide whether to
+The `promotion_signals` entry feeds `clauditor-consolidate` to decide whether to
 merge the files or promote the cluster into a `.claude/rules/` entry (merge-or-promote;
 the consolidator chooses based on cross-layer signals).
 
@@ -112,7 +112,7 @@ Note: this reviewer is read-only. Do not repair the index - emit findings only.
 
 ## Project status verification
 
-Do not call any tracker MCP from this reviewer - ticket status is resolved by `audit-recon`
+Do not call any tracker MCP from this reviewer - ticket status is resolved by `clauditor-recon`
 and available in `Baseline.ticket_status`.
 
 If a `project_*.md` mentions a ticket identifier (`PROJ-XXXX`, `GH-NNN`, `LINEAR-NNN`, etc.):

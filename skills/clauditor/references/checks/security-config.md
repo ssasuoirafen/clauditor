@@ -1,13 +1,13 @@
 # Security config check - Stage 5e/5f/5g/5h + secrets/gitignore
 
-Governs what `audit-security-config` checks. Finding and `promotion_signals` shapes are defined in
-`${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/contracts.md`.
+Governs what `clauditor-security-config` checks. Finding and `promotion_signals` shapes are defined in
+`${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/contracts.md`.
 
 All findings from this reviewer use one of these layers: `"hooks"`, `"mcp"`, `"settings"`,
 `"output-styles"`.
 
 Secrets and gitignore policy (profile #2-4) is documented in
-`${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/profile.md`. Do not restate it here -
+`${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/profile.md`. Do not restate it here -
 derive the rules from profile.md when auditing.
 
 ## Precondition
@@ -149,7 +149,7 @@ derived from the host (dots to underscores). Renaming them breaks auth.
 in isolation. Tag permission findings as `cross_scope: true` so the barrier (C4) evaluates
 stale or dangerous entries against the **union** across all scopes. Evaluate permissions against
 the canonical precedence order and array-merge rule in
-`${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/decision-matrix.md`. An entry absent from
+`${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/decision-matrix.md`. An entry absent from
 the project file may still be active if inherited from a higher-precedence scope.
 
 For every permission entry found in any scope, also read the other scopes' permission arrays
@@ -208,7 +208,7 @@ styles (absence is not a finding).
 
 ## Secrets and gitignore audit (profile #2-4)
 
-Policy source: `${CLAUDE_PLUGIN_ROOT}/skills/audit-claude/references/profile.md` (profiles
+Policy source: `${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/profile.md` (profiles
 #2-4). Do not restate the policy - derive the rules from profile.md.
 
 **Tracking status:** use `Baseline.tracked_map` as the primary source. Only files listed with
@@ -254,7 +254,7 @@ For each file audited under this section, emit one Finding:
 ## Cross-scope dedup note
 
 > **Cross-layer dedup is NOT this reviewer's job.** Emit a precise `topic_key` and `gist` on
-> every Finding (including `action: "keep"`) so `audit-consolidate` barrier C4 can detect
+> every Finding (including `action: "keep"`) so `clauditor-consolidate` barrier C4 can detect
 > permission/precedence conflicts across all reviewer outputs.
 >
 > **Permission findings** (G10-G13): always tag with `cross_scope: true` so the barrier

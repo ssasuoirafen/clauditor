@@ -4,7 +4,7 @@ JSON shapes shared across all audit agents. Every agent reads this file; no agen
 
 ## Baseline
 
-Output produced by `audit-recon`; consumed by all reviewer agents and `audit-consolidate`.
+Output produced by `clauditor-recon`; consumed by all reviewer agents and `clauditor-consolidate`.
 
 ```json
 {
@@ -33,10 +33,10 @@ Output produced by `audit-recon`; consumed by all reviewer agents and `audit-con
 }
 ```
 
-`ticket_status`: populated by `audit-recon` in interactive mode when a tracker MCP is reachable
+`ticket_status`: populated by `clauditor-recon` in interactive mode when a tracker MCP is reachable
 (maps each referenced ticket ID to `"open"` or `"closed"`). In read-only mode or when no tracker
-MCP is reachable, all collected ticket IDs are set to `"unknown"`. Reviewer agents (`audit-memory`,
-`audit-local-docs`) read this field; they do NOT call the tracker MCP directly.
+MCP is reachable, all collected ticket IDs are set to `"unknown"`. Reviewer agents (`clauditor-memory`,
+`clauditor-local-docs`) read this field; they do NOT call the tracker MCP directly.
 
 `entities` values are objects (not bare strings) so reviewers can read frontmatter flags (`has_paths`, `has_tools`) without re-globbing.
 
@@ -44,7 +44,7 @@ MCP is reachable, all collected ticket IDs are set to `"unknown"`. Reviewer agen
 
 ## Finding
 
-Emitted by every reviewer agent as an array; consumed by `audit-consolidate` for cross-layer dedup and promotion.
+Emitted by every reviewer agent as an array; consumed by `clauditor-consolidate` for cross-layer dedup and promotion.
 
 Use `path` for a single-file finding; use `paths` (array) when the finding spans multiple files, e.g. a merge; set `path` to the primary/first file for back-compat. `paths` is optional.
 
@@ -63,7 +63,7 @@ Use `path` for a single-file finding; use `paths` (array) when the finding spans
 
 ## promotion_signals
 
-Emitted by reviewer agents that feed promotion (memory, claude-md, local-docs); consumed by `audit-consolidate`.
+Emitted by reviewer agents that feed promotion (memory, claude-md, local-docs); consumed by `clauditor-consolidate`.
 
 ```json
 { "kind": "feedback-cluster|claude-md-procedure|local-runbook", "topic_key": "...", "count": 2, "paths": [] }
