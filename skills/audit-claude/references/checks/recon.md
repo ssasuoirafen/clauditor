@@ -141,7 +141,7 @@ This becomes the Baseline JSON consumed by all reviewer agents. Populate every f
 | Baseline field | Source |
 |---|---|
 | `mode` | prompt argument (read-only \| interactive) |
-| `project_path` | git root from `git rev-parse --show-toplevel` |
+| `project_path` | audited project path passed to the audit (default: cwd) - NOT necessarily the git root; repo-relative checks use `git -C <project_path> rev-parse --show-toplevel` as the git root, which may differ if the project is nested inside a larger repo (use the passed path as `project_path` in that case) |
 | `repo_type` | CLAUDE.md content + gitignore patterns + org/domain signals |
 | `project_kind` | pyproject.toml / package.json / presence of `server.py` / IaC files |
 | `memory_dir` | resolved abs path from Step 1/2/3, or null |

@@ -16,15 +16,25 @@ Output produced by `audit-recon`; consumed by all reviewer agents and `audit-con
   "parent_memory_dir": "abs path or null",
   "stack_versions": { "<tool>": "<version-from-deps>" },
   "entities": {
-    "skills": [], "agents": [], "commands": [], "rules": [],
-    "hooks": [], "output_styles": [], "mcp_servers": [], "plugins": []
+    "rules":         [{ "name": "...", "has_paths": true }],
+    "agents":        [{ "name": "...", "has_tools": true }],
+    "skills":        [{ "name": "..." }],
+    "commands":      [{ "name": "..." }],
+    "hooks":         [{ "name": "..." }],
+    "output_styles": [{ "name": "..." }],
+    "mcp_servers":   [{ "name": "..." }],
+    "plugins":       [{ "name": "..." }]
   },
-  "tracked_map": { "<file>": "tracked|gitignored|no-git" },
+  "tracked_map": { "<file>": "tracked|gitignored|no-git|absent" },
   "local_surface": { "docs": [], "projects": [], "data": [] },
   "claude_md_path": "root|.claude|missing",
   "agents_md_present": true
 }
 ```
+
+`entities` values are objects (not bare strings) so reviewers can read frontmatter flags (`has_paths`, `has_tools`) without re-globbing.
+
+`tracked_map` value `absent` means the file does not exist on disk (distinct from `gitignored`, which requires the file to be present but excluded).
 
 ## Finding
 
