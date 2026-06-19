@@ -24,6 +24,7 @@ Glob: <parent_memory_dir>/feedback_*.md
 Glob: <parent_memory_dir>/project_*.md
 Glob: <parent_memory_dir>/reference_*.md
 # Active work trackers (.local/projects/ - Baseline local_surface.projects):
+# Skip this pass entirely when local_surface.projects is an empty list.
 Read: each file in local_surface.projects
 ```
 
@@ -52,8 +53,10 @@ emit a `keep` finding so audit-consolidate knows the entry was reviewed.
 
 When two or more `feedback_*.md` files share a common topic:
 
-1. Emit one Finding per cluster: `action: "merge"`, `severity: "low"`, detail
-   explaining which files overlap and what the consolidated topic is.
+1. Emit one Finding per cluster: `action: "merge"`, `severity: "low"`, `path` set
+   to the first file in the cluster, `paths` set to the full list of cluster file
+   paths (per the multi-file finding rule in contracts.md), detail explaining which
+   files overlap and what the consolidated topic is.
 2. Also emit one `promotion_signals` entry:
    ```json
    { "kind": "feedback-cluster", "topic_key": "<normalized>", "count": <n>, "paths": ["<abs>", ...] }
@@ -90,14 +93,19 @@ Scan every per-fact file (`feedback_*.md`, `project_*.md`, `reference_*.md`) for
 
 ## MEMORY.md index integrity check (end-of-stage)
 
-After classifying all entries, verify the MEMORY.md index is consistent:
+After classifying all entries, verify the MEMORY.md index is consistent.
+
+Match on the link TARGET - the `(filename.md)` portion of a markdown link
+`[label](filename.md)` - NOT on the label text. Both directions apply:
 
 1. **Orphan index entries:** for every markdown link `[label](filename.md)` in
-   `MEMORY.md`, check the target file exists in `<memory_dir>/`. Missing file ->
-   Finding: `severity: "medium"`, `action: "flag"`, `detail: "orphan index entry: <filename> missing on disk"`.
+   `MEMORY.md`, check whether `<memory_dir>/filename.md` exists on disk. If the
+   target file is missing -> Finding: `severity: "medium"`, `action: "flag"`,
+   `detail: "orphan index entry: filename.md missing on disk"`.
 2. **Missing index entries:** for every `feedback_*.md`, `project_*.md`,
-   `reference_*.md` in `<memory_dir>/`, check it has a corresponding line in
-   `MEMORY.md`. No matching line -> Finding: `severity: "low"`, `action: "flag"`,
+   `reference_*.md` in `<memory_dir>/`, check whether `MEMORY.md` contains at
+   least one line whose `(target)` portion matches the filename. If no such line
+   exists -> Finding: `severity: "low"`, `action: "flag"`,
    `detail: "file <name> not referenced in MEMORY.md index"`.
 
 Note: this reviewer is read-only. Do not repair the index - emit findings only.

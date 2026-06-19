@@ -40,10 +40,13 @@ Output produced by `audit-recon`; consumed by all reviewer agents and `audit-con
 
 Emitted by every reviewer agent as an array; consumed by `audit-consolidate` for cross-layer dedup and promotion.
 
+Use `path` for a single-file finding; use `paths` (array) when the finding spans multiple files, e.g. a merge; set `path` to the primary/first file for back-compat. `paths` is optional.
+
 ```json
 {
   "layer": "memory|rules|claude-md|entities|hooks|mcp|settings|output-styles|local-docs",
   "path": "abs path",
+  "paths": ["abs path", "..."],
   "topic_key": "short normalized key for cross-layer matching",
   "gist": "one-line normalized statement of the content/issue",
   "severity": "critical|high|medium|low",
