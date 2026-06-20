@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin.json",
   "name": "clauditor",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Audits and optimizes a project's .claude/ structure, memory, and .local/ via a manual orchestrator skill and read-only per-domain review agents."
 }

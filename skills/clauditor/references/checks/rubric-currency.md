@@ -121,6 +121,7 @@ Key points clauditor relies on:
 - Agent files: `.claude/agents/<name>.md`
 - Required frontmatter: `name`, `description`
 - Recommended: `tools:` (restriction), `model:`
+- `disallowedTools` (camelCase) frontmatter denies specific tools, removed from the inherited/specified list
 - Without `tools:` the agent receives all session tools
 - Agents can preload skills via `skills:` array
 - Built-in agents: Explore (Haiku, read-only), Plan (read-only), general-purpose (all tools)
@@ -164,7 +165,7 @@ Check files: `checks/security-config.md` H01-H06; `checks/consolidate.md` C4
 URL: https://code.claude.com/docs/en/mcp
 
 Key points clauditor relies on:
-- Transport types: `http` (recommended, alias `streamable-http`), `sse` (deprecated), `stdio`
+- Transport types: `http` (recommended, alias `streamable-http`), `sse` (deprecated), `stdio`, `ws` (WebSocket, persistent bidirectional)
 - SSE is deprecated - rubric correctly flags it as a finding
 - Source of truth: `.mcp.json` (project/team); `~/.claude.json` (user/local)
 - `${VAR}` expansion in `.mcp.json` draws from OS/shell env only (NOT settings.json `env`)
