@@ -35,6 +35,7 @@ Read: <project_path>/.claude/rules/<name>.md
 | R04 | Rule body covers multiple unrelated domains (multiple distinct tech stacks or heading clusters with no overlap) | `flag` - split into focused per-domain rules | low |
 | R05 | Rule body exceeds 200 lines | `flag` - consider splitting by subtopic | low |
 | R06 | Two or more rules in `entities.rules` overlap substantially in domain or content (same-layer duplication) | `flag` - merge or consolidate to eliminate within-rules redundancy | low |
+| R11 | An otherwise-normative rule contains an embedded NON-normative block: change history, changelog, migration/completion status, "fixed issue X / fixed in MR #N", resolved-ticket notes, "done"/"completed (date)" records | `flag` - strip the historical block, keep the rest of the rule | medium |
 
 > **Cross-layer dedup is NOT this reviewer's job.** Do NOT assert that a rule duplicates a memory
 > entry or CLAUDE.md content - the rules reviewer cannot reliably see those layers. Instead, emit
@@ -54,6 +55,33 @@ never match anything real.
 R02 acceptable dispositions (pick one; do not force both):
 - Keep unconditional and add a one-line `description:` stating the trigger
 - Move to `feedback_*.md` if the rule is really a personal protective heuristic
+
+### R11 - normative vs historical content
+
+A rule is standing normative guidance: it tells the AI HOW to write code or behave. It is loaded
+on every matching session, so non-normative history is pure bloat that also goes stale.
+
+**The test for each block/section in a rule body:** does it tell the AI *how to write code now*
+(normative - keep) or *record what happened* (historical - strip)?
+
+Strip (R11 fires) - records the past:
+- "Migration status (completed 2026-04-18)", "All stages 1-5 done", "final audit: 0 violations"
+- "Changelog" / "History" / "Change log" sections
+- "Fixed issue X", "Fixed in MR/PR #N", "Resolved PROJ-123", "was broken, now works"
+- "Done" / "Completed" records, closed-ticket notes, "as of <date>: ... done"
+
+Keep (R11 does NOT fire) - normative even though it mentions a version or date:
+- "Since dbt 1.5, use `unit_tests:` instead of `tests:`" (tells you how to write code now)
+- "On Greenplum 6, prefer `DISTRIBUTED BY` over randomly distributed" (current standing rule)
+- A `description:` or `paths:` value, or a one-line "last reviewed" freshness stamp
+
+Disposition when R11 fires:
+- Fixed-issues / changelog / completed-migration records: the information lives in git history and
+  the tracker - recommend DELETING the block, not migrating it.
+- A genuinely durable project fact mixed in (rare): move that line to `.local/docs/` or a memory
+  `project_*.md`, not kept in the rule.
+- This is distinct from R10 (whole rule IS a project fact -> migrate the whole file) and from R05
+  (rule too long). R11 keeps the normative rule and removes only the historical block.
 
 ## Stage 5d checks - Entity appropriateness
 

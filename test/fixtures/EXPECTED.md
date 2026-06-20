@@ -9,6 +9,7 @@ One row per planted issue. Format: `reviewer | file | expected finding`
 | clauditor-claude-md | sample-project/CLAUDE.md | multi-step "Adding a new model" procedure is a promotion candidate (move to rule or agent) |
 | clauditor-claude-md | sample-project/AGENTS.md | present but not imported via @AGENTS.md in CLAUDE.md (H7) |
 | clauditor-rules | sample-project/.claude/rules/sql-style.md | file-scoped content but missing paths: frontmatter (add paths:) |
+| clauditor-rules | sample-project/.claude/rules/ddl-conventions.md | embedded history/changelog/fixed-issue blocks (Migration status, Changelog, Fixed in MR #42) in a normative rule - flag, strip the historical blocks (R11); the "Since Postgres 14" line is normative and must NOT be flagged |
 | clauditor-entities | sample-project/.claude/agents/helper.md | agent definition has no tools: allowlist (L9) |
 | clauditor-security-config | sample-project/.claude/settings.json | hardcoded secret FAKE_TOKEN=secret123 in env in tracked file (leak) |
 | clauditor-security-config | sample-project/.claude/settings.json | hooks command is a prose reminder string, not a shell command (M15) |
