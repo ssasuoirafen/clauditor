@@ -1,5 +1,7 @@
 # Local docs check - Stage 6 + Stage 7
 
+> Best-practice rules here are grounded in the sources cited in `${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/sources.md`.
+
 This document governs what the `clauditor-local-docs` reviewer checks. Finding and
 `promotion_signals` shapes are defined in
 `${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/contracts.md`.

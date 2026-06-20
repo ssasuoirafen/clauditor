@@ -1,5 +1,7 @@
 # Rules check - Stage 3 + 5d
 
+> Best-practice rules here are grounded in the sources cited in `${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/sources.md`.
+
 Governs what `clauditor-rules` checks. Finding shape is defined in
 `${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/contracts.md`.
 

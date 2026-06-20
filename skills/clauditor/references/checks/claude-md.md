@@ -1,5 +1,7 @@
 # CLAUDE.md check - Stage 4
 
+> Best-practice rules here are grounded in the sources cited in `${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/sources.md`.
+
 Governs what `clauditor-claude-md` checks. Finding and `promotion_signals` shapes are defined in
 `${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/contracts.md`.
 

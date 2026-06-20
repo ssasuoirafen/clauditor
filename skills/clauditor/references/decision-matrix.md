@@ -1,5 +1,7 @@
 # Decision matrix - where things should live
 
+> Best-practice rules here are grounded in the sources cited in `${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/sources.md`.
+
 | Artifact | Where |
 |---|---|
 | Universal project rule (stack, architecture, CI/CD, MCP servers) | `<project>/CLAUDE.md` (project root; `.claude/CLAUDE.md` also supported - profile #1) |

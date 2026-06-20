@@ -1,5 +1,7 @@
 # Entities check - Stage 5a/5b/5c/5i/5j
 
+> Best-practice rules here are grounded in the sources cited in `${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/sources.md`.
+
 Governs what `clauditor-entities` checks. Finding and `promotion_signals` shapes are defined in
 `${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/contracts.md`.
 

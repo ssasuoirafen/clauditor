@@ -1,5 +1,7 @@
 # Consolidate check - barrier C1-C6
 
+> Best-practice rules here are grounded in the sources cited in `${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/sources.md`.
+
 Governs what `clauditor-consolidate` does. Finding shape is defined in
 `${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/contracts.md`.
 

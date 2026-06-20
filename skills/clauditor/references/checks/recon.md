@@ -1,5 +1,7 @@
 # Recon check - Stage 1 inventory + reality baseline
 
+> Best-practice rules here are grounded in the sources cited in `${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/sources.md`.
+
 This document governs what the `clauditor-recon` agent collects. Output shape is defined in
 `${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/contracts.md` (Baseline section) - do not redefine it here.
 

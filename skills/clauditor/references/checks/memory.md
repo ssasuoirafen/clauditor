@@ -1,5 +1,7 @@
 # Memory check - Stage 2
 
+> Best-practice rules here are grounded in the sources cited in `${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/sources.md`.
+
 This document governs what the `clauditor-memory` reviewer checks. Finding and
 `promotion_signals` shapes are defined in
 `${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/contracts.md`.
