@@ -142,8 +142,9 @@ Key points clauditor relies on:
 Check files: `checks/entities.md` E01-E07, E06 specifically; `decision-matrix.md`
 
 **Known drift target (medium):** E06 flags skills >300 lines. The live skills doc states NO hard
-body-size limit. This is a clauditor-internal heuristic, not a spec requirement. If E06 is worded
-as a hard rule rather than "conservative guidance", flag as medium.
+body-size limit and gives its own advisory ("keep SKILL.md under 500 lines"). Flag as medium whenever
+the rubric's threshold number diverges from the live doc's own number (300 vs 500), REGARDLESS of
+whether E06 is worded as advisory or hard - the number mismatch alone is the drift.
 
 ### 6. Hooks
 URL: https://code.claude.com/docs/en/hooks
@@ -227,7 +228,7 @@ These are pre-seeded targets the agent must confirm or correct on each run:
 |---|---|---|---|
 | D1 | SSE transport deprecated - rubric already correct | confirm (no finding if still correct) | `checks/security-config.md` F01 |
 | D2 | Commands merged into skills - rubric's auto-trigger/explicit criterion is correct | confirm (no finding if still correct) | `checks/entities.md` 5c |
-| D3 | E06 >300-line skill flag is an internal heuristic, NOT a live doc limit | medium if E06 is worded as a hard rule | `checks/entities.md` E06 |
+| D3 | E06 >300-line skill flag - live doc gives its own number (500), no hard limit | medium if the rubric's threshold number diverges from the live doc's (300 vs 500), regardless of wording | `checks/entities.md` E06 |
 | D4 | Plugin settings.json only honors `agent` + `subagentStatusLine` - rubric has NO check for this | medium (coverage gap) | `checks/entities.md` or `checks/security-config.md` |
 | D5 | `~/.claude.json` is MCP user/local config (not `~/.claude/settings.json`) - recon check correct | confirm (no finding if still correct) | `checks/recon.md` |
 
