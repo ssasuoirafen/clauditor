@@ -97,6 +97,13 @@ Common correct uses for reference (do not flag these as wrong):
 - `UserPromptSubmit` -> context injection (e.g. mode reminder)
 - `SessionStart` -> env bootstrap or project banner
 
+**Common hook events (non-exhaustive) - see the live hooks doc for the full set (~30 events):**
+SessionStart, UserPromptSubmit, PreToolUse, PermissionRequest, PostToolUse, PostToolUseFailure,
+Stop, SessionEnd, SubagentStart, SubagentStop, PreCompact, PostCompact, Notification,
+InstructionsLoaded, ConfigChange, CwdChanged, FileChanged, WorktreeCreate, WorktreeRemove.
+The rubric's H05 check covers `PostToolUseFailure` as a known valid event name (not
+`PreToolUseFailure`). When checking H05, validate against the live hooks doc, not just this list.
+
 ---
 
 ## 5f MCP servers
@@ -111,7 +118,7 @@ scopes. Compare the Baseline `entities.mcp_servers` list against both files.
 | F03 | Hardcoded secret/token in `.mcp.json` AND `tracked_map[".mcp.json"] == "gitignored"` | `keep` - gitignored personal setup; NOT a finding (profile #2) | low |
 | F04 | Same token in both `.mcp.json` and `settings.json` `env` block | `keep` - expected duplication (profile #2); env block does not reach MCP startup | low |
 | F05 | `.mcp.json` exists and `tracked_map[".mcp.json"] == "gitignored"` but team `.mcp.json` is needed and is absent | `flag` - team MCP setup undocumented; decide: commit a secrets-free `.mcp.json` with `${VAR}` refs | low |
-| F06 | MCP server defined but never referenced in any workflow, and `enableAllProjectMcpServers: true` | `flag` - unused server; remove to shorten MCP init time | low |
+| F06 | MCP server defined but never referenced in any workflow, and project MCP servers are auto-enabled (`enableAllProjectMcpServers: true` or server listed in `enabledMcpjsonServers`) | `flag` - unused server; remove to shorten MCP init time | low |
 | F07 | MCP server targets production infra (prod IP/host, live API) or unauthenticated datastore | `flag` - blast radius finding; severity depends on impact | high |
 | F08 | Project is an MCP-server producer (has `server.py`, `mcp[cli]`/FastMCP in deps, or `project.scripts` entry) but `.mcp.json` is absent | `keep` - correct for a producer repo; do NOT flag absent `.mcp.json` | low |
 

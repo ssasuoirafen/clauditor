@@ -59,16 +59,29 @@ per contracts.md.
 - `name` - optional; defaults to the directory name. If present, must match the directory name.
 
 `allowed-tools:` in a skill is **pre-approval, not restriction.** The skill retains access to all
-session tools regardless. True tool restriction requires an agent.
+session tools regardless.
+
+`disallowed-tools:` in a skill removes listed tools from Claude's available pool **for the current
+turn only**; the restriction clears on the next message. This is a real per-turn restriction
+mechanism for skills - a skill using `disallowed-tools` does NOT need to be relabeled as an agent
+solely for needing tool restriction.
+
+Distinction:
+- `allowed-tools` - pre-approval (no change to available pool)
+- `disallowed-tools` - per-turn removal from available pool (clears next message)
+- agent `tools:` - session-scoped hard restriction + full context isolation
+
+Only recommend an agent (E04) when SESSION-scoped isolation/restriction or parallel execution is
+needed, not when per-turn `disallowed-tools` suffices.
 
 | ID  | Check | Action | Severity |
 |-----|-------|--------|----------|
 | E01 | `description` absent or empty | `flag` - skill will not auto-trigger reliably; add concrete activation cues | high |
 | E02 | `name` present but does not match directory name | `flag` - mismatch causes invocation confusion; align name or drop the override | low |
 | E03 | Skill body shows manual-invocation intent (argument-driven, no auto-trigger cues) | `relabel` -> command | medium |
-| E04 | Skill requires isolated context, parallel execution, or enforced tool restriction | `relabel` -> agent | medium |
+| E04 | Skill requires isolated context, parallel execution, or SESSION-scoped hard tool restriction (not addressed by per-turn `disallowed-tools`) | `relabel` -> agent | medium |
 | E05 | Skill body is passive text-instruction with no steps or tool calls | `relabel` -> rule | low |
-| E06 | Skill > 300 lines or description indicates it routinely runs in isolation | `flag` - consider converting to an agent | low |
+| E06 | Skill > 500 lines | `flag` (advisory) - consider splitting body or moving reference material to sibling files; the live skills doc recommends keeping SKILL.md under 500 lines but states no hard limit | low |
 | E07 | Skill is vendored (`metadata.json`, `AGENTS.md`, `LICENSE` header, or large `rules/*.md` library) and has a structural or content issue | `flag` - re-vendor from source; do not propose line edits on vendored files | low |
 
 Emit `action: "keep"` when none of E01-E07 applies.
@@ -151,6 +164,7 @@ files live in `~/.claude/plugins/marketplaces/*/plugins/*/`.
 | E32 | Plugin-shipped hooks fire in this project but are not in the hooks audit | `flag` - route to hooks reviewer; do not audit hook body here | low |
 | E33 | Plugin skill `description` auto-triggers on the same work as a local rule/skill, with no name collision (semantic/intent overlap) | `flag` with stable `topic_key` so C3 can resolve the conflict | medium |
 | E34 | The correct plugin for the project type is not enabled (e.g. `mcp-server-dev` for an MCP-server repo) | `flag` - positive fit gap; recommend enabling | low |
+| E35 | Plugin `settings.json` contains keys other than `agent` and `subagentStatusLine` | `flag` - silently-ignored config; only `agent` and `subagentStatusLine` are honored by the plugin settings.json; all other keys are ignored without error | low |
 
 For E33: set a stable normalized `topic_key` on the Finding (lowercase, underscores, e.g.
 `dbt_conventions_overlap`) so `clauditor-consolidate` barrier C3 can match it against findings from

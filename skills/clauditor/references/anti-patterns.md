@@ -36,7 +36,8 @@
 | Skill for a one-step parameterized flow (`/release-notes`) | command | Skill is for auto-triggering, not manual invocation with an argument |
 | Command for knowledge that should auto-trigger | skill | Command requires explicit invocation; auto-knowledge goes through skill triggers |
 | Rule with multi-step logic / tool calls | skill | Rule = passive text; steps/tools make it a skill |
-| Skill requires restricted tool set or >300 lines | agent | Skill inherits tools from main session; need isolation - that's an agent |
+| Skill requires SESSION-scoped tool isolation or parallel execution | agent | `disallowed-tools` handles per-turn removal; agent is only needed for session-scoped isolation, not per-turn restriction |
+| Skill body >500 lines with no supporting files | split body or move reference material to sibling files | Live doc advisory: keep SKILL.md under 500 lines; move detailed reference to sibling files |
 | Skill for role-based tasks ("respond as support") | agent | Context is shared with user, no tool isolation |
 | Agent without `tools:` allowlist | add allowlist or make a skill | Isolation loses meaning - the agent sees everything |
 | Agent for interactive audit/cleanup with handoff back to main session | command | Subagent runs isolated; orchestration that hands results back belongs in a command. (Subagent CAN call preloaded skills via `skills:` frontmatter, but cannot return to main dialogue.) |

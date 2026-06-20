@@ -137,21 +137,22 @@ Key points clauditor relies on:
 - Dynamic context injection via `` !`cmd` `` syntax
 - Skill precedence: enterprise > personal > project > bundled
 - Plugin skills namespaced as `plugin:skill`
-- No documented hard body-size limit (E06 >300-line flag is a conservative heuristic, not spec)
+- No documented hard body-size limit; live doc advisory: keep SKILL.md under 500 lines (E06 uses 500)
+- `disallowed-tools` frontmatter removes tools from Claude's pool for the current turn (clears next message); a skill using `disallowed-tools` does NOT need relabeling to an agent solely for tool restriction
 
 Check files: `checks/entities.md` E01-E07, E06 specifically; `decision-matrix.md`
 
-**Known drift target (medium):** E06 flags skills >300 lines. The live skills doc states NO hard
-body-size limit and gives its own advisory ("keep SKILL.md under 500 lines"). Flag as medium whenever
-the rubric's threshold number diverges from the live doc's own number (300 vs 500), REGARDLESS of
-whether E06 is worded as advisory or hard - the number mismatch alone is the drift.
+**D3 - FIXED (confirm clean):** E06 now flags skills >500 lines (advisory), matching the live doc's own 500-line guidance. Confirm no finding if E06 says 500.
 
 ### 6. Hooks
 URL: https://code.claude.com/docs/en/hooks
 
 Key points clauditor relies on:
 - Five handler types: `command`, `http`, `mcp_tool`, `prompt`, `agent`
-- Events: SessionStart, UserPromptSubmit, PreToolUse, PostToolUse, PermissionRequest, Stop, SessionEnd
+- Events (non-exhaustive, ~30 total): SessionStart, UserPromptSubmit, PreToolUse, PostToolUse,
+  PostToolUseFailure, PermissionRequest, Stop, SessionEnd, SubagentStart, SubagentStop,
+  PreCompact, PostCompact, Notification, InstructionsLoaded, ConfigChange, CwdChanged,
+  FileChanged, WorktreeCreate, WorktreeRemove - see live hooks doc for the full list
 - Default timeouts: command/http/mcp_tool = 600 s, prompt = 30 s, agent = 60 s
 - Exit 2 blocks the action; exit 1 is non-blocking
 - Hooks run without controlling terminal (v2.1.139+)
@@ -184,21 +185,20 @@ Key points clauditor relies on:
 - Manifest fields: `name`, `description`, `version`, `author`
 - Common mistake: do NOT put `skills/`, `agents/` inside `.claude-plugin/` - only `plugin.json` goes there
 - Plugin `settings.json` at plugin root: ONLY `agent` and `subagentStatusLine` keys are honored
+- Check E35 in entities.md 5j flags a plugin `settings.json` with keys other than `agent`/`subagentStatusLine`
 
-Check files: `checks/entities.md` E30-E34; `checks/recon.md`
+Check files: `checks/entities.md` E30-E35; `checks/recon.md`
 
-**Known drift target (medium):** Plugin `settings.json` only honors `agent` and `subagentStatusLine`
-keys. Clauditor does NOT currently audit plugin settings.json content. This is a coverage gap.
-If the live doc confirms this constraint, flag as medium: "rubric has no check for plugin
-settings.json key scope; checks/security-config.md or checks/entities.md should add one."
-Source URL: https://code.claude.com/docs/en/plugins
+**D4 - FIXED (confirm clean):** E35 now exists in entities.md 5j and audits plugin settings.json key scope. Confirm no finding if E35 is present and covers this constraint.
 
 ### 9. Plugin marketplaces
 URL: https://code.claude.com/docs/en/plugin-marketplaces
 
 Key points clauditor relies on:
 - `marketplace.json` catalog in a git repo
-- Official marketplaces: `claude-plugins-official` and `claude-plugins-community`
+- Official marketplace: `claude-plugins-official` (Anthropic-curated, auto-available)
+- Community marketplace install identifier: `claude-community` (repo: `anthropics/claude-plugins-community`;
+  add via `/plugin marketplace add anthropics/claude-plugins-community`)
 - `claude plugin validate` runs same checks as review pipeline
 - Approved plugins pinned to commit SHA
 
@@ -228,8 +228,8 @@ These are pre-seeded targets the agent must confirm or correct on each run:
 |---|---|---|---|
 | D1 | SSE transport deprecated - rubric already correct | confirm (no finding if still correct) | `checks/security-config.md` F01 |
 | D2 | Commands merged into skills - rubric's auto-trigger/explicit criterion is correct | confirm (no finding if still correct) | `checks/entities.md` 5c |
-| D3 | E06 >300-line skill flag - live doc gives its own number (500), no hard limit | medium if the rubric's threshold number diverges from the live doc's (300 vs 500), regardless of wording | `checks/entities.md` E06 |
-| D4 | Plugin settings.json only honors `agent` + `subagentStatusLine` - rubric has NO check for this | medium (coverage gap) | `checks/entities.md` or `checks/security-config.md` |
+| D3 | E06 skill size threshold - rubric now says 500 (advisory), matching live doc | confirm (no finding if E06 says 500) | `checks/entities.md` E06 |
+| D4 | Plugin settings.json key scope - E35 now exists in entities.md 5j | confirm (no finding if E35 is present) | `checks/entities.md` E35 |
 | D5 | `~/.claude.json` is MCP user/local config (not `~/.claude/settings.json`) - recon check correct | confirm (no finding if still correct) | `checks/recon.md` |
 
 For each D-target: if the live doc confirms the rubric is correct, do NOT emit a finding.
