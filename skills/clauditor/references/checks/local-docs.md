@@ -211,6 +211,36 @@ one primary Finding whose `detail` includes a summary row:
 Where multiple findings apply to the same file, emit each as a separate Finding with the
 same `path` but distinct `topic_key` values.
 
+### 7.6 - Language consistency (corpus outlier)
+
+Determine the dominant natural language of the `.local/docs/` corpus: classify each file in
+`Baseline.local_surface.docs` (and each `.local/projects/` tracker) by the language of its prose
+body (ignore code blocks, identifiers, paths, URLs, and ticket IDs - those are always English).
+Take the majority language across the corpus as the norm.
+
+Flag any file whose dominant prose language differs from the corpus norm:
+- `action: "flag"`, `severity: "low"`, `topic_key: "language_outlier_<basename>"`,
+  `detail: "language outlier: this doc is <lang>, corpus is mostly <norm-lang>; confirm the intended audience language and normalize the minority set"`.
+
+Report the outlier as the minority side, not by assuming English wins: for a Russian-audience
+project the English docs may be the anomaly. State both the outlier language and the norm so the
+user decides which way to normalize.
+
+**Decision order** (apply in sequence; stop at the first that matches):
+1. **Balanced split** - if neither language reaches a 2-to-1 majority (e.g. 3 EN / 2 RU), the corpus is
+   deliberately bilingual: emit nothing.
+2. **Audience match** - derive the project audience language per the Language rule in
+   `${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/profile.md`. If the minority language equals the
+   audience language, the majority set is the anomaly: emit ONE corpus-level finding naming the majority
+   set as the outlier (not one per minority file), or emit nothing if both are defensible.
+3. **Audience indeterminate or matches the majority** - flag the minority files as outliers (the normal case).
+
+In `topic_key`, `<basename>` is the full filename including extension (e.g.
+`language_outlier_zametki-arhitektura.md`).
+
+This is a same-layer consistency check across `.local/docs`; it does not assert cross-layer
+duplication (that remains `clauditor-consolidate`'s job).
+
 ## Promotion signals - local-runbook
 
 After completing all checks, identify files in `Baseline.local_surface.docs` that were

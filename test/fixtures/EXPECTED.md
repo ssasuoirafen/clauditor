@@ -14,6 +14,7 @@ One row per planted issue. Format: `reviewer | file | expected finding`
 | clauditor-security-config | sample-project/.claude/settings.json | hooks command is a prose reminder string, not a shell command (M15) |
 | clauditor-security-config | sample-project/.mcp.json | hardcoded API_TOKEN in tracked .mcp.json (leak) |
 | clauditor-local-docs | sample-project/.local/docs/done-PROJ-1.md | closed-ticket artifact (delete) |
+| clauditor-local-docs | sample-project/.local/docs/zametki-arhitektura.md | language outlier: RU prose while corpus norm is EN - flag, confirm intended audience language (7.6) |
 | clauditor-local-docs | sample-project/.local/data/node-secretkey.pem | non-regenerable key file, must-keep (never delete) |
 | clauditor-memory | memory/feedback_sql_a.md, memory/feedback_sql_b.md | >=2 feedback entries on the same topic (merge or promote to rule) |
 | clauditor-memory | memory/project_done.md | closed-ticket project context (PROJ-42 closed 2024-12-01), stale - delete |
