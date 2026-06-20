@@ -41,3 +41,22 @@ Otherwise set `mode = interactive`. Pass `mode` to `clauditor-recon` in Step 1.
    Example: `date +%Y-%m-%d > "${HOME}/.claude/clauditor-last-review"` (or equivalent for the
    platform). Only write this marker on a completed interactive run - not on read-only runs (step 5).
 7. Do NOT hand off to any external CLAUDE.md tool (none exist in this toolchain).
+
+---
+
+## Optional: rubric currency
+
+To check whether clauditor's own best-practice rules are still current with Anthropic docs,
+dispatch the `clauditor-rubric-currency` agent. This is SEPARATE from the project audit above
+and must NOT be added to step 2's parallel fan-out. It requires web access (WebFetch) and
+audits clauditor's rubric, not the user's project.
+
+Example invocation (outside a /clauditor run, manually):
+
+```
+Dispatch agent: clauditor-rubric-currency
+```
+
+The agent reads `${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/sources.md` and
+`${CLAUDE_PLUGIN_ROOT}/skills/clauditor/references/checks/rubric-currency.md`, fetches the
+live Anthropic doc pages, and returns a JSON findings report flagging any stale rules.
