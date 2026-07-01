@@ -1,3 +1,2 @@
-# nothing tracked-sensitive; keep test scratch out
-*.log
-.superpowers/
+# Working artifacts
+.local/
